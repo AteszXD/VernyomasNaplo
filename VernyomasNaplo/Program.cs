@@ -25,6 +25,7 @@ namespace VernyomasNaplo
                 Directory.CreateDirectory("Users");
                 // Regisztráció
             }
+
             else // Igen --> Ha üres: nincs felhasználó, regisztráció | van felhasználó, bejelentkezés
             {
                 FileInfo users = new FileInfo("Users.json");
@@ -38,7 +39,54 @@ namespace VernyomasNaplo
         // Regisztráció
         static void Register()
         {
+            string specialChars = "\\/:*?\"<>|"; // Speciális karakterek amiket a Windows nem engedélyez fájl- és mappanévként
+            string username;
+            bool allowed;
 
+            // Felhasználónév bekérése
+            do
+            {
+                allowed = true;
+                Console.Write("Felhasználónév: ");
+                username = Console.ReadLine();
+
+                if (string.IsNullOrEmpty(username)) // Üres név kezelése
+                {
+                    Console.Clear();
+                    Console.WriteLine("A felhasználónév nem lehet üres");
+                    allowed = false;
+                }
+
+                foreach (char specialChar in specialChars) // Speciális karakterek
+                {
+                    if (username.Contains(specialChar))
+                    {
+                        Console.Clear();
+                        Console.WriteLine("A felhasználónév nem tartalmazhat speciális karaktereket (\\ / : * ? \" < > |)");
+                        allowed = false;
+                        break;
+                    }
+                }
+            } while (!allowed);
+
+            // Jelszó bekérése
+            Console.Write("Jelszó: ");
+            string password = Console.ReadLine();
+
+            // Születési dátum bekérése
+            Console.Write("Születési dátum (ÉÉÉÉ-HH-NN): ");
+            string birthDate = Console.ReadLine();
+
+            // Nem bekérése, csak Férfi vagy Nő lehet
+            string gender;
+            do 
+            {
+                Console.Write("Neme (Férfi/Nő): ");
+                gender = Console.ReadLine();
+            } while (gender != "Férfi" && gender != "Nő");
+
+            // Felhasználó létrehozása és mentése a Users.json fájlba
+            File.AppendAllText("users.csv", $"{username};{password};{gender};{birthDate}\n", Encoding.UTF8);
         }
 
         // Bejelentkezés
