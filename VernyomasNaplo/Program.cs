@@ -36,7 +36,9 @@ namespace VernyomasNaplo
             }
         }
 
-        // Regisztráció
+        /// <summary>
+        /// Regisztrációs függvény, kezeli a felhasználónevekben a speciális karaktereket és hogy üres-e. Bekéri a jelszót, születési dátumot és nemet.
+        /// </summary>
         static void Register()
         {
             string specialChars = "\\/:*?\"<>|"; // Speciális karakterek amiket a Windows nem engedélyez fájl- és mappanévként
@@ -73,7 +75,7 @@ namespace VernyomasNaplo
             Console.Write("Jelszó: ");
             string password = Console.ReadLine();
 
-            // Születési dátum bekérése
+            // Születési dátum bekérése, ezt majd DateTime-mal kéne megoldani.
             Console.Write("Születési dátum (ÉÉÉÉ-HH-NN): ");
             string birthDate = Console.ReadLine();
 
