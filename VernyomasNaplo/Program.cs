@@ -15,29 +15,29 @@ namespace VernyomasNaplo
         }
 
         /// <summary>
-        /// Megnézi, hogy létezik-e a Users.json fájl, és ha igen, akkor üres-e, ez alapján dönt a regisztráció vagy bejelentkezés között. Mivel amikor ezt írtam még nem volt menüszerkezet, csak egy felhasználót lehet regisztrálni.
+        /// Megnézi, hogy létezik-e a users.csv fájl, és ha igen, akkor üres-e, ez alapján dönt a regisztráció vagy bejelentkezés között. Mivel amikor ezt írtam még nem volt menüszerkezet, csak egy felhasználót lehet regisztrálni.
         /// </summary>
         static void CheckUsersFile()
         {
-            if (!File.Exists("Users.json")) // Nem --> Létrehozzuk a .jsont és a mappát is, ez egy első indítás
+            if (!File.Exists("users.csv")) // Nem --> Létrehozzuk a .csvt és a mappát is, ez egy első indítás
             {
-                File.Create("Users.json").Close();
+                File.Create("users.csv").Close();
                 Directory.CreateDirectory("Users");
                 // Regisztráció
             }
 
             else // Igen --> Ha üres: nincs felhasználó, regisztráció | van felhasználó, bejelentkezés
             {
-                FileInfo users = new FileInfo("Users.json");
+                FileInfo users = new FileInfo("users.csv");
                 if (users.Length > 0)
                 {
-                    // Bejelentkezés
+                    // Bejelentkezés, majd ha lesz menü akkor az
                 }
             }
         }
 
         /// <summary>
-        /// Regisztrációs függvény, kezeli a felhasználónevekben a speciális karaktereket és hogy üres-e. Bekéri a jelszót, születési dátumot és nemet.
+        /// Regisztrációs függvény, kezeli a felhasználónevekben a speciális karaktereket és hogy üres-e. Bekéri a jelszót, születési dátumot és nemetm, illetve lementi a felhasználó adatait és létrehozza az üres naplót.
         /// </summary>
         static void Register()
         {
@@ -52,19 +52,34 @@ namespace VernyomasNaplo
                 Console.Write("Felhasználónév: ");
                 username = Console.ReadLine();
 
-                if (string.IsNullOrEmpty(username)) // Üres név kezelése
+                // 1. Üres név kezelése
+                if (string.IsNullOrEmpty(username))
                 {
                     Console.Clear();
-                    Console.WriteLine("A felhasználónév nem lehet üres");
+                    Console.WriteLine("A felhasználónév nem lehet üres!");
                     allowed = false;
                 }
 
-                foreach (char specialChar in specialChars) // Speciális karakterek
+                // 2. Speciális karakterek kezelése
+                foreach (char specialChar in specialChars)
                 {
                     if (username.Contains(specialChar))
                     {
                         Console.Clear();
-                        Console.WriteLine("A felhasználónév nem tartalmazhat speciális karaktereket (\\ / : * ? \" < > |)");
+                        Console.WriteLine("A felhasználónév nem tartalmazhat speciális karaktereket! (\\ / : * ? \" < > |)");
+                        allowed = false;
+                        break;
+                    }
+                }
+
+                // 3. Duplikált felhasználónév kezelése
+                string[] existingUsers = File.ReadAllLines("users.csv");
+                foreach (string user in existingUsers)
+                {
+                    if (username == user.Split(';')[0])
+                    {
+                        Console.Clear();
+                        Console.WriteLine("A felhasználó már létezik!");
                         allowed = false;
                         break;
                     }
@@ -84,11 +99,13 @@ namespace VernyomasNaplo
             do 
             {
                 Console.Write("Neme (Férfi/Nő): ");
-                gender = Console.ReadLine();
-            } while (gender != "Férfi" && gender != "Nő");
+                gender = Console.ReadLine().ToLower();
+            } while (gender != "férfi" && gender != "nő");
 
-            // Felhasználó létrehozása és mentése a Users.json fájlba
+            // Felhasználó létrehozása és mentése a users.csv fájlba
             File.AppendAllText("users.csv", $"{username};{password};{gender};{birthDate}\n", Encoding.UTF8);
+            File.Create($"{username}.csv").Close();
+            File.Move($"{username}.csv", $"Users/{username}.csv");
         }
 
         // Bejelentkezés
