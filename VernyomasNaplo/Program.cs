@@ -11,7 +11,7 @@ namespace VernyomasNaplo
     {
         static void Main(string[] _)
         {
-
+            CheckUsersFile();
         }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace VernyomasNaplo
             {
                 File.Create("users.csv").Close();
                 Directory.CreateDirectory("Users");
-                // Regisztráció
+                Register();
             }
 
             else // Igen --> Ha üres: nincs felhasználó, regisztráció | van felhasználó, bejelentkezés
@@ -31,7 +31,7 @@ namespace VernyomasNaplo
                 FileInfo users = new FileInfo("users.csv");
                 if (users.Length > 0)
                 {
-                    // Bejelentkezés, majd ha lesz menü akkor az
+                    Login(); // Majd ha lesz menüszerkezet, akkor ide jön a választás
                 }
             }
         }
@@ -113,29 +113,34 @@ namespace VernyomasNaplo
         /// </summary>
         static void Login()
         {
-            bool loggedIn = false;
-            bool userExists = false;
+            bool loggedIn;
+            bool userExists;
 
             do
             {
+                loggedIn = false;
+                userExists = false;
+
                 Console.Write("Felhasználónév: ");
                 string username = Console.ReadLine();
                 Console.Write("Jelszó: ");
                 string password = Console.ReadLine();
                 Console.Clear();
 
+                // Felhasználónév és jelszó ellenőrzése
                 string[] existingUsers = File.ReadAllLines("users.csv");
                 foreach (string user in existingUsers)
                 {
-                    if (username == user.Split(';')[0])
+                    if (username == user.Split(';')[0]) // Ha megtalálta a felhasználónevet
                     {
                         userExists = true;
-                        if (password == user.Split(';')[1])
+                        if (password == user.Split(';')[1]) // Ha a jelszó is stimmel
+
                         {
                             loggedIn = true;
                             break;
                         }
-                        else
+                        else // Ha a jelszó nem stimmel
                         {
                             Console.Clear();
                             Console.WriteLine("Hibás jelszó!");
@@ -144,7 +149,7 @@ namespace VernyomasNaplo
                     }
                 }
 
-                if (!userExists)
+                if (!userExists) // Ha nem találta meg a felhasználónevet
                 {
                     Console.Clear();
                     Console.WriteLine("A felhasználó nem létezik!");
