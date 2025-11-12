@@ -15,7 +15,7 @@ namespace VernyomasNaplo
         }
 
         /// <summary>
-        /// Megnézi, hogy létezik-e a users.csv fájl, és ha igen, akkor üres-e, ez alapján dönt a regisztráció vagy bejelentkezés között. Mivel amikor ezt írtam még nem volt menüszerkezet, csak egy felhasználót lehet regisztrálni.
+        /// Megnézi, hogy létezik-e a users.csv fájl, és ha igen, akkor üres-e. Ez alapján dönt a regisztráció vagy bejelentkezés között. Mivel amikor ezt írtam még nem volt menüszerkezet, csak egy felhasználót lehet regisztrálni.
         /// </summary>
         static void CheckUsersFile()
         {
@@ -37,7 +37,7 @@ namespace VernyomasNaplo
         }
 
         /// <summary>
-        /// Regisztrációs függvény, kezeli a felhasználónevekben a speciális karaktereket és hogy üres-e. Bekéri a jelszót, születési dátumot és nemetm, illetve lementi a felhasználó adatait és létrehozza az üres naplót.
+        /// Regisztrációs függvény, kezeli a felhasználónevekben a speciális karaktereket és hogy üres-e. Bekéri a jelszót, születési dátumot és nemet, illetve lementi a felhasználó adatait és létrehozza az üres naplót.
         /// </summary>
         static void Register()
         {
