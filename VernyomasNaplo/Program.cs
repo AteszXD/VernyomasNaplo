@@ -108,10 +108,49 @@ namespace VernyomasNaplo
             File.Move($"{username}.csv", $"Users/{username}.csv");
         }
 
-        // Bejelentkezés
+        /// <summary>
+        /// Bejelentkezési függvény, ellenőrzi a felhasználónevet és jelszót a users.csv fájl alapján.
+        /// </summary>
         static void Login()
         {
-            
+            bool loggedIn = false;
+            bool userExists = false;
+
+            do
+            {
+                Console.Write("Felhasználónév: ");
+                string username = Console.ReadLine();
+                Console.Write("Jelszó: ");
+                string password = Console.ReadLine();
+                Console.Clear();
+
+                string[] existingUsers = File.ReadAllLines("users.csv");
+                foreach (string user in existingUsers)
+                {
+                    if (username == user.Split(';')[0])
+                    {
+                        userExists = true;
+                        if (password == user.Split(';')[1])
+                        {
+                            loggedIn = true;
+                            break;
+                        }
+                        else
+                        {
+                            Console.Clear();
+                            Console.WriteLine("Hibás jelszó!");
+                            break;
+                        }
+                    }
+                }
+
+                if (!userExists)
+                {
+                    Console.Clear();
+                    Console.WriteLine("A felhasználó nem létezik!");
+                }
+
+            } while (!loggedIn);
         }
     }
 }
