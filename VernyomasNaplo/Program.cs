@@ -10,9 +10,14 @@ namespace VernyomasNaplo
     internal class Program
     {
         static List<string> records;
+        static string username = "John Pork";
         static void Main(string[] _)
         {
-
+            Console.Write("Adja meg a vérnyomás értékét: ");
+            string record = Console.ReadLine();
+            WriteCSVFile(record,username);
+            ReadCSVFile(username);
+            DisplayRecords();
         }
 
         static void ReadCSVFile(string username)
@@ -23,11 +28,16 @@ namespace VernyomasNaplo
 
         static void DisplayRecords()
         {
-            Console.Write("|Név\t\t|Dátum\t\t\t\t|Vérnyomás\t\t|\n");
+            Console.WriteLine($"{username} Vérnyomásmérései");
             foreach (string record in records)
             {
-                Console.WriteLine($"|{record.Split(';')[0]}\t|{record.Split(';')[1]}\t|{record.Split(';')[2]}\t|\n");
+                Console.Write($"| {record.Split(';')[0]} | {record.Split(';')[1]}\t| {record.Split(';')[2]}\t|\n");
             }
+        }
+
+        static void WriteCSVFile(string record, string username)
+        {
+            File.AppendAllText($"Users/{username}.csv",$"{username};{DateTime.Now};{record}\n", Encoding.UTF8);
         }
     }
 }
