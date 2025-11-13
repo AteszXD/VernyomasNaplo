@@ -10,9 +10,9 @@ namespace Menu
     {
         static void Main()
         {
-            string name = "";
+            string nev = "";
             int szivveres = 0;
-            bool man = true;
+            bool ferfie = true;
             int currentPoint = 0;
             do
             {
@@ -52,13 +52,13 @@ namespace Menu
                         Console.ForegroundColor = ConsoleColor.White;
 
                         Console.Write("Kérem a nevét: ");
-                        name = Console.ReadLine();
+                        nev = Console.ReadLine();
 
                         Console.Write("Kérem a szívverésnek a mérési adatát: ");
                         szivveres = int.Parse(Console.ReadLine());
 
                         Console.Write("Kérem a nemét (f/n): ");
-                        man = Console.ReadLine() == "f";
+                        ferfie = Console.ReadLine() == "f";
 
                         Console.WriteLine("Az adatokat sikeresen rögzítettük. Enterre tovább...");
 
@@ -71,9 +71,9 @@ namespace Menu
                         Console.WriteLine("*** ADATKIÍRÁS ***");
                         Console.ForegroundColor = ConsoleColor.White;
 
-                        Console.WriteLine($"A neve: {name}");
+                        Console.WriteLine($"A neve: {nev}");
                         Console.WriteLine($"A születési éve: {szivveres}");
-                        Console.WriteLine($"A neme: {(man ? "Férfi" : "Nő")}");
+                        Console.WriteLine($"A neme: {(ferfie ? "Férfi" : "Nő")}");
 
                         Console.WriteLine("Enterre tovább...");
                         Console.ReadKey();
