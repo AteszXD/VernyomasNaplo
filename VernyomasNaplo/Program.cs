@@ -23,6 +23,7 @@ namespace VernyomasNaplo
         /// </summary>
         static void LoggedinMenu()
         {
+            cPoint = 0;
             do
             {
                 bool selected = false;
@@ -93,9 +94,16 @@ namespace VernyomasNaplo
                         Console.Clear();
                         Console.Beep();
                         Console.Write("Biztosan kilép? (i/n): ");
-                        if (Console.ReadKey().Key != ConsoleKey.I)
+                        if (Console.ReadKey().Key == ConsoleKey.I)
                         {
-                            Program.cPoint = 0;
+                            // Vissza a főmenübe
+                            Console.Clear();
+                            LoginMenu();
+                            return;
+                        }
+                        else
+                        {
+                            cPoint = 0;
                         }
                         break;
                 }
@@ -141,6 +149,7 @@ namespace VernyomasNaplo
 
         static void LoggedinAdminMenu()
         {
+            cPoint = 0;
             string targetUser;
             do
             {
@@ -219,8 +228,7 @@ namespace VernyomasNaplo
                         targetUser = Console.ReadLine();
 
                         ReadCSVFile(targetUser);
-
-                        // Ide jön a módosítás logikája.
+                        DisplayRecordsMenu(targetUser);
 
                         break;
 
@@ -261,7 +269,7 @@ namespace VernyomasNaplo
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("*** VÉRNYOMÁSNAPLÓ ***");
+                Console.WriteLine("*** VÉRNYOMÁSNAPLÓ (ADMIN) ***");
                 Console.ForegroundColor = ConsoleColor.White;
 
                 if (cPoint == 0)
@@ -318,6 +326,7 @@ namespace VernyomasNaplo
         /// </summary>
         static void LoginMenu()
         {
+            cPoint = 0;
             do
             {
                 bool selected = false;
@@ -548,7 +557,14 @@ namespace VernyomasNaplo
                         {
                             loggedIn = true;
                             user = username;
-                            LoggedinMenu();
+                            if (username.ToLower() == "admin") // Ha admin
+                            {
+                                LoggedinAdminMenu();
+                            }
+                            else
+                            {
+                                LoggedinMenu();
+                            }
                             break;
                         }
                         else // Ha a jelszó nem stimmel
@@ -587,6 +603,90 @@ namespace VernyomasNaplo
             {
                 Console.Write($"| {record.Split(';')[0]} | {record.Split(';')[1]}\t| {record.Split(';')[2]}\t|\n");
             }
+        }
+
+        static void DisplayRecordsMenu(string targetUser)
+        {
+            void ShowMenu3(int cPoint)
+            {
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("*** VÉRNYOMÁSNAPLÓ ***");
+                Console.ForegroundColor = ConsoleColor.White;
+
+                for (int i = 0; i < records.Count; i++)
+                {
+                    if (i == cPoint)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    Console.WriteLine(records[i]);
+                }
+
+                if (cPoint == records.Count)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                Console.WriteLine("Vissza a főmenübe");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+
+            do
+            {
+                bool selected = false;
+                do
+                {
+                    ShowMenu3(cPoint);
+                    switch (Console.ReadKey().Key)
+                    {
+                        case ConsoleKey.Enter:
+                            selected = true;
+                            break;
+                        case ConsoleKey.UpArrow:
+                            if (cPoint > 0)
+                            {
+                                cPoint -= 1;
+                            }
+                            break;
+                        case ConsoleKey.DownArrow:
+                            if (cPoint < records.Count)
+                            {
+                                cPoint += 1;
+                            }
+                            break;
+                    }
+                } while (!selected);
+
+                if (cPoint == records.Count)
+                {
+                    break;
+                }
+
+                Console.Clear();
+                Console.WriteLine($"Kiválasztott rekord: {records[cPoint]}");
+                Console.Write("Adja meg az új vérnyomás értéket: ");
+                string newRecord = Console.ReadLine();
+
+                // A kiválasztott mérés módosítása
+                string[] recordParts = records[cPoint].Split(';');
+                recordParts[2] = newRecord; // Csak a vérnyomás értékét módosítjuk
+                records[cPoint] = string.Join(";", recordParts);
+
+                // A módosított mérés visszaírása a fájlba
+                File.WriteAllLines($"Users/{targetUser}.csv", records, Encoding.UTF8);
+
+                Console.WriteLine("A rekord sikeresen módosítva. Enterre tovább...");
+                Console.ReadLine();
+
+            } while (cPoint != records.Count);
         }
 
         /// <summary>
