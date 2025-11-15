@@ -139,6 +139,180 @@ namespace VernyomasNaplo
             }
         }
 
+        static void LoggedinAdminMenu()
+        {
+            string targetUser;
+            do
+            {
+                bool selected = false;
+                do
+                {
+                    ShowMenu1(cPoint);
+                    switch (Console.ReadKey().Key)
+                    {
+                        case ConsoleKey.Enter:
+                            selected = true;
+                            break;
+                        case ConsoleKey.UpArrow:
+                            if (cPoint > 0)
+                            {
+                                cPoint -= 1;
+                            }
+                            break;
+                        case ConsoleKey.DownArrow:
+                            if (cPoint < 4)
+                            {
+                                cPoint += 1;
+                            }
+                            break;
+                    }
+                } while (!selected);
+
+                switch (cPoint)
+                {
+                    case 0: // Adatbekérés
+
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("*** ÚJ MÉRÉS RÖGZÍTÉSE ***");
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        Console.Write("Adja meg a vérnyomás értékét: ");
+                        string record = Console.ReadLine();
+                        WriteCSVFile(record, user);
+
+                        Console.WriteLine("Az adatokat sikeresen rögzítettük. Enterre tovább...");
+                        Console.ReadLine();
+                        Console.Clear();
+
+                        ReadCSVFile(user);
+                        DisplayRecords();
+
+                        Console.WriteLine("Enterre tovább...");
+                        Console.ReadLine();
+
+                        break;
+
+                    case 1: // Adatkiírás
+
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("*** ADATKIÍRÁS ***");
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        ReadCSVFile(user);
+                        DisplayRecords();
+
+                        Console.WriteLine("Enterre tovább...");
+                        Console.ReadLine();
+
+                        break;
+                    
+                    case 2: // Mérési adat módosítása
+
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("*** MÉRÉSI ADAT MÓDOSÍTÁSA ***");
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        Console.Write("Adja meg a módosítandó felhasználó nevét: ");
+                        targetUser = Console.ReadLine();
+
+                        ReadCSVFile(targetUser);
+
+                        // Ide jön a módosítás logikája.
+
+                        break;
+
+                    case 3: // Felhasználó módosítása/törlése
+
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("*** FELHASZNÁLÓ MÓDOSÍTÁSA/TÖRLÉSE ***");
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        List<string> users;
+                        users = File.ReadAllLines($"users.csv").ToList();
+                        foreach (string user in users)
+                        {
+                            Console.WriteLine(user.Split(';'));
+                        }
+
+                        Console.WriteLine("Kérem adja meg a módosítandó/törlendő felhasználó nevét: ");
+                        targetUser = Console.ReadLine();
+
+                        // Ide jön a módosítás/törlés logikája
+
+                        break;
+
+                    case 4: // Kilépés
+                        Console.Clear();
+                        Console.Beep();
+                        Console.Write("Biztosan kilép? (i/n): ");
+                        if (Console.ReadKey().Key != ConsoleKey.I)
+                        {
+                            Program.cPoint = 0;
+                        }
+                        break;
+                }
+
+            } while (cPoint != 4);
+            void ShowMenu1(int cPoint)
+            {
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("*** VÉRNYOMÁSNAPLÓ ***");
+                Console.ForegroundColor = ConsoleColor.White;
+
+                if (cPoint == 0)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                Console.WriteLine("Új mérési adatok rögzítése");
+                if (cPoint == 1)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                Console.WriteLine("Mérési adatok kiírása");
+                if (cPoint == 2)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                Console.WriteLine("Mérési adat módosítása (ADMIN)");
+                if (cPoint == 3)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                Console.WriteLine("Felhasználó módosítása/törlése (ADMIN)");
+                if (cPoint == 4)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                Console.WriteLine("Kilépés");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+        }
+
         /// <summary>
         /// Program indításakor megjelenő menü kezelése. A felhasználó itt tud választani a bejelentkezés és új felhasználó regisztrálása között (vagy kilépni). Ez a menü a nyilakkal irányítható.
         /// </summary>
