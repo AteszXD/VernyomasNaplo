@@ -4,18 +4,23 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-namespace Menu
+
+namespace VernyomasNaplo
 {
     internal class Program
     {
         static int cPoint = 0;
         static string user;
-        static void Main()
+        static List<string> records;
+
+        static void Main(string[] _)
         {
             CheckUsersFile();
-
-
         }
+
+        /// <summary>
+        /// A bejelentkezés után megnyíló menü kezelése. A felhasználó itt tudja megnézni méréseit és újat rögzíteni (illetve kilépni). Ez a menü a nyilakkal irányítható.
+        /// </summary>
         static void LoggedinMenu()
         {
             do
@@ -23,7 +28,6 @@ namespace Menu
                 bool selected = false;
                 do
                 {
-
                     ShowMenu1(cPoint);
                     switch (Console.ReadKey().Key)
                     {
@@ -37,16 +41,14 @@ namespace Menu
                             }
                             break;
                         case ConsoleKey.DownArrow:
+                            if (cPoint < 2)
                             {
-                                if (cPoint < 2)
-                                    cPoint += 1;
+                                cPoint += 1;
                             }
-                            break;
-                        default:
-                            Console.Beep();
                             break;
                     }
                 } while (!selected);
+
                 switch (cPoint)
                 {
                     case 0: // Adatbekérés
@@ -56,9 +58,19 @@ namespace Menu
                         Console.WriteLine("*** ÚJ MÉRÉS RÖGZÍTÉSE ***");
                         Console.ForegroundColor = ConsoleColor.White;
 
-
+                        Console.Write("Adja meg a vérnyomás értékét: ");
+                        string record = Console.ReadLine();
+                        WriteCSVFile(record, user);
 
                         Console.WriteLine("Az adatokat sikeresen rögzítettük. Enterre tovább...");
+                        Console.ReadLine();
+                        Console.Clear();
+
+                        ReadCSVFile(user);
+                        DisplayRecords();
+
+                        Console.WriteLine("Enterre tovább...");
+                        Console.ReadLine();
 
                         break;
 
@@ -69,22 +81,23 @@ namespace Menu
                         Console.WriteLine("*** ADATKIÍRÁS ***");
                         Console.ForegroundColor = ConsoleColor.White;
 
-
+                        ReadCSVFile(user);
+                        DisplayRecords();
 
                         Console.WriteLine("Enterre tovább...");
-                        Console.ReadKey();
+                        Console.ReadLine();
 
                         break;
 
                     case 2: // Kilépés
                         Console.Clear();
+                        Console.Beep();
                         Console.Write("Biztosan kilép? (i/n): ");
                         if (Console.ReadKey().Key != ConsoleKey.I)
                         {
                             Program.cPoint = 0;
                         }
                         break;
-
                 }
 
             } while (cPoint != 2);
@@ -123,9 +136,12 @@ namespace Menu
                 }
                 Console.WriteLine("Kilépés");
                 Console.ForegroundColor = ConsoleColor.White;
-
             }
         }
+
+        /// <summary>
+        /// Program indításakor megjelenő menü kezelése. A felhasználó itt tud választani a bejelentkezés és új felhasználó regisztrálása között (vagy kilépni). Ez a menü a nyilakkal irányítható.
+        /// </summary>
         static void LoginMenu()
         {
             do
@@ -133,7 +149,6 @@ namespace Menu
                 bool selected = false;
                 do
                 {
-
                     ShowMenu2(cPoint);
                     switch (Console.ReadKey().Key)
                     {
@@ -147,13 +162,10 @@ namespace Menu
                             }
                             break;
                         case ConsoleKey.DownArrow:
+                            if (cPoint < 2)
                             {
-                                if (cPoint < 2)
-                                    cPoint += 1;
+                                cPoint += 1;
                             }
-                            break;
-                        default:
-                            Console.Beep();
                             break;
                     }
                 } while (!selected);
@@ -166,8 +178,6 @@ namespace Menu
                         Console.WriteLine("*** REGISZTRÁCIÓ ***");
                         Console.ForegroundColor = ConsoleColor.White;
 
-
-
                         Register();
 
                         break;
@@ -179,24 +189,22 @@ namespace Menu
                         Console.WriteLine("*** BEJELENTKEZÉS ***");
                         Console.ForegroundColor = ConsoleColor.White;
 
-
-
                         Login();
 
                         break;
 
                     case 2: // Kilépés
                         Console.Clear();
+                        Console.Beep();
                         Console.Write("Biztosan kilép? (i/n): ");
                         if (Console.ReadKey().Key != ConsoleKey.I)
                         {
                             cPoint = 0;
                         }
                         break;
-
                 }
-
             } while (cPoint != 2);
+
             void ShowMenu2(int currentPoint)
             {
                 Console.Clear();
@@ -232,12 +240,11 @@ namespace Menu
                 }
                 Console.WriteLine("Kilépés");
                 Console.ForegroundColor = ConsoleColor.White;
-
             }
         }
 
         /// <summary>
-        /// Megnézi, hogy létezik-e a users.csv fájl, és ha igen, akkor üres-e. Ez alapján dönt a regisztráció vagy bejelentkezés között. Mivel amikor ezt írtam még nem volt menüszerkezet, csak egy felhasználót lehet regisztrálni.
+        /// Megnézi, hogy létezik-e a users.csv fájl. Ha nem, létrehozza és regisztrációra irányít. Ha igen, megnézi, hogy üres-e. Ha üres, regisztrációra irányít, ha nem, felhozza a felhasználókezelő menüt.
         /// </summary>
         static void CheckUsersFile()
         {
@@ -248,12 +255,16 @@ namespace Menu
                 Register();
             }
 
-            else // Igen --> Ha üres: nincs felhasználó, regisztráció | van felhasználó, bejelentkezés
+            else // Igen --> Ha üres: nincs felhasználó, regisztráció | van felhasználó, menü
             {
                 FileInfo users = new FileInfo("users.csv");
                 if (users.Length > 0)
                 {
-                    LoginMenu(); // Majd ha lesz menüszerkezet, akkor ide jön a választás
+                    LoginMenu();
+                }
+                else
+                {
+                    Register();
                 }
             }
         }
@@ -381,23 +392,20 @@ namespace Menu
                     Console.WriteLine("A felhasználó nem létezik!");
                 }
             } while (!loggedIn);
-}
-        static List<string> records;
-        static void Main(string[] _)
-        {
-            Console.Write("Adja meg a vérnyomás értékét: ");
-            string record = Console.ReadLine();
-            WriteCSVFile(record,user);
-            ReadCSVFile(user);
-            DisplayRecords();
         }
 
+        /// <summary>
+        /// A felhasználó naplójának beolvasása.
+        /// </summary>
+        /// <param name="username">A felhasználó neve, aki be van jelentkezve.</param>
         static void ReadCSVFile(string username)
         {
-            // a username.csv fájl beolvasása, ez a létező eredményeknek van
             records = File.ReadAllLines($"Users/{username}.csv").ToList();            
         }
 
+        /// <summary>
+        /// A felhasználó naplójának kiírása a konzolra, egy táblázatszerű formában.
+        /// </summary>
         static void DisplayRecords()
         {
             Console.WriteLine($"{user} Vérnyomásmérései");
@@ -407,7 +415,11 @@ namespace Menu
             }
         }
 
-            
+        /// <summary>
+        /// A felhasználó új mérését rögzíti a naplójába.
+        /// </summary>
+        /// <param name="record">A mérés, ezt a felhasználó adja meg.</param>
+        /// <param name="username">A felhasználó neve, aki be van jelentkezve.</param>
         static void WriteCSVFile(string record, string username)
         {
             File.AppendAllText($"Users/{username}.csv",$"{username};{DateTime.Now};{record}\n", Encoding.UTF8);
