@@ -605,6 +605,10 @@ namespace VernyomasNaplo
             }
         }
 
+        /// <summary>
+        /// Adminisztrátor verziója az eredeti kiírónak. Ez egy menü, ahol kiválasztható egy mérés, majd módosítható a vérnyomás.
+        /// </summary>
+        /// <param name="targetUser">A felhasználó akinek mérései közül módosítani szertnénk.</param>
         static void DisplayRecordsMenu(string targetUser)
         {
             void ShowMenu3(int cPoint)
