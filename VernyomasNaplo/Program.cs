@@ -147,6 +147,10 @@ namespace VernyomasNaplo
             }
         }
 
+
+        /// <summary>
+        /// A LoggedinMenu() bővített változata, adminisztrátori jogosultságokkal. Itt a felhasználó módosíthat mérési adatokat és felhasználókat is. Ez a menü a nyilakkal irányítható.
+        /// </summary>
         static void LoggedinAdminMenu()
         {
             cPoint = 0;
