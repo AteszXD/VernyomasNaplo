@@ -247,13 +247,27 @@ namespace VernyomasNaplo
                         users = File.ReadAllLines($"users.csv").ToList();
                         foreach (string user in users)
                         {
-                            Console.WriteLine(user.Split(';'));
+                            Console.WriteLine(user.Split(';')[0]);
                         }
 
-                        Console.WriteLine("Kérem adja meg a módosítandó/törlendő felhasználó nevét: ");
+                        Console.WriteLine("Kérem adja meg a törlendő felhasználó nevét: ");
                         targetUser = Console.ReadLine();
 
-                        // Ide jön a módosítás/törlés logikája
+                        bool userFound = false;
+
+                        for (int i = 0; i < users.Count; i++)
+                        {
+                            if (users[i].Split(';')[0] == targetUser)
+                            {
+                                userFound = true;
+                                users.RemoveAt(i);
+                                File.WriteAllLines("users.csv", users, Encoding.UTF8);
+                                File.Delete($"Users/{targetUser}.csv");
+                                Console.WriteLine("A felhasználó sikeresen törölve. Enterre tovább...");
+                                Console.ReadLine();
+                                break;
+                            }
+                        }
 
                         break;
 
