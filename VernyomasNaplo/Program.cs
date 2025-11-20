@@ -628,7 +628,8 @@ namespace VernyomasNaplo
             Console.WriteLine($"{user} Vérnyomásmérései");
             foreach (string record in records)
             {
-                Console.Write($"| {record.Split(';')[0]} | {record.Split(';')[1]}\t| {AnalyseBloodPressure(record.Split(';')[2])}\t|\n");
+                Console.Write($"| {record.Split(';')[0]} | {record.Split(';')[1]}\t| {RateBloodPressure(record.Split(';')[2])}\t|\n");
+                Console.ResetColor();
             }
         }
 
@@ -733,18 +734,19 @@ namespace VernyomasNaplo
         /// <summary>
         /// Vérnyomás elemzése a mérés alapján.
         /// </summary>
-        /// <param name="record">A mérés</param>
-        static string AnalyseBloodPressure(string record)
+        /// <param name="record">A mérés.</param>
+        static string RateBloodPressure(string record)
         {
-            if (int.Parse(record.Split('/')[0]) / int.Parse(record.Split('/')[1]) > 1.6)
+            double ratio = double.Parse(record.Split('/')[0]) / double.Parse(record.Split('/')[1]);
+            if (ratio > 1.6)
             {
-                return $"{record}: Magas vérnyomás";
+                return $"\u001b[31m{record} (Magas)\u001b[0m";
             }
-            else if (int.Parse(record.Split('/')[0]) / int.Parse(record.Split('/')[1]) < 1.4)
+            else if (ratio < 1.4)
             {
-                return $"{record}: Alacsony vérnyomás";
+                return $"\u001b[94m{record} (Alacsony)\u001b[0m";
             }
-            return $"{record}: Normális";
+            return $"\u001b[32m{record} (Jó)\u001b[0m\t";
         }
     }
 }
