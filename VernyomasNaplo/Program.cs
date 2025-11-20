@@ -86,7 +86,6 @@ namespace VernyomasNaplo
                         Console.WriteLine("*** ADATKIÍRÁS ***");
                         Console.ForegroundColor = ConsoleColor.White;
 
-                        ReadCSVFile(user);
                         DisplayRecords();
 
                         Console.WriteLine("Enterre tovább...");
@@ -558,10 +557,11 @@ namespace VernyomasNaplo
                     {
                         userExists = true;
                         if (password == u.Split(';')[1]) // Ha a jelszó is stimmel
-
                         {
                             loggedIn = true;
                             user = username;
+                            ReadCSVFile(user);
+
                             if (username.ToLower() == "admin") // Ha admin
                             {
                                 LoggedinAdminMenu();
@@ -833,6 +833,9 @@ namespace VernyomasNaplo
             Console.WriteLine($"\u001b[32m{Math.Round((normal / sum) * 100, 2)}% Jó ({sum}-ból {normal})\u001b[0m\t");
             Console.WriteLine($"\u001b[31m{Math.Round((high / sum) * 100, 2)} % Alacsony (({sum}-ból {high})\u001b[0m\t");
             Console.WriteLine($"\u001b[94m{Math.Round((low / sum) * 100, 2)}% Alacsony ({sum}-ból {low})\u001b[0m\t");
+            normal = 0;
+            high = 0;
+            low = 0;
         }
     }
 }
