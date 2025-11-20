@@ -837,5 +837,17 @@ namespace VernyomasNaplo
             high = 0;
             low = 0;
         }
+
+        /// <summary>
+        /// Középre író függvény.
+        /// </summary>
+        /// <param name="text">A szöveg amit középre kell írni.</param>
+        static void WriteCentered(string text)
+        {
+            int width = Console.WindowWidth;
+            int leftPadding = (width - text.Length) / 2;
+            if (leftPadding < 0) leftPadding = 0;
+            Console.WriteLine(new string(' ', leftPadding) + text);
+        }
     }
 }
