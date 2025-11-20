@@ -628,7 +628,7 @@ namespace VernyomasNaplo
             Console.WriteLine($"{user} Vérnyomásmérései");
             foreach (string record in records)
             {
-                Console.Write($"| {record.Split(';')[0]} | {record.Split(';')[1]}\t| {record.Split(';')[2]}\t|\n");
+                Console.Write($"| {record.Split(';')[0]} | {record.Split(';')[1]}\t| {AnalyseBloodPressure(record.Split(';')[2])}\t|\n");
             }
         }
 
@@ -728,6 +728,23 @@ namespace VernyomasNaplo
         static void WriteCSVFile(string record, string username)
         {
             File.AppendAllText($"Users/{username}.csv",$"{username};{DateTime.Now};{record}\n", Encoding.UTF8);
+        }
+
+        /// <summary>
+        /// Vérnyomás elemzése a mérés alapján.
+        /// </summary>
+        /// <param name="record">A mérés</param>
+        static string AnalyseBloodPressure(string record)
+        {
+            if (int.Parse(record.Split('/')[0]) / int.Parse(record.Split('/')[1]) > 1.6)
+            {
+                return $"{record}: Magas vérnyomás";
+            }
+            else if (int.Parse(record.Split('/')[0]) / int.Parse(record.Split('/')[1]) < 1.4)
+            {
+                return $"{record}: Alacsony vérnyomás";
+            }
+            return $"{record}: Normális";
         }
     }
 }
