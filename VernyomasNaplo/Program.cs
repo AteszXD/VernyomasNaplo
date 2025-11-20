@@ -286,13 +286,13 @@ namespace VernyomasNaplo
             void ShowMenu1(int cPoint)
             {
                 Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("*** VÉRNYOMÁSNAPLÓ (ADMIN) ***");
                 Console.ForegroundColor = ConsoleColor.White;
 
                 if (cPoint == 0)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.ForegroundColor = ConsoleColor.Blue;
                 }
                 else
                 {
@@ -301,7 +301,7 @@ namespace VernyomasNaplo
                 Console.WriteLine("Új mérési adatok rögzítése");
                 if (cPoint == 1)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.ForegroundColor = ConsoleColor.Blue;
                 }
                 else
                 {
@@ -310,7 +310,7 @@ namespace VernyomasNaplo
                 Console.WriteLine("Mérési adatok kiírása");
                 if (cPoint == 2)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.ForegroundColor = ConsoleColor.Blue;
                 }
                 else
                 {
@@ -319,7 +319,7 @@ namespace VernyomasNaplo
                 Console.WriteLine("Mérési adat módosítása (ADMIN)");
                 if (cPoint == 3)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.ForegroundColor = ConsoleColor.Blue;
                 }
                 else
                 {
@@ -328,7 +328,7 @@ namespace VernyomasNaplo
                 Console.WriteLine("Felhasználó módosítása/törlése (ADMIN)");
                 if (cPoint == 4)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.ForegroundColor = ConsoleColor.Blue;
                 }
                 else
                 {
@@ -372,7 +372,7 @@ namespace VernyomasNaplo
                 } while (!selected);
                 switch (cPoint)
                 {
-                    case 0: // Adatbekérés
+                    case 0: // Regisztráció
 
                         Console.Clear();
                         Console.ForegroundColor = ConsoleColor.Yellow;
@@ -381,9 +381,9 @@ namespace VernyomasNaplo
 
                         Register();
 
-                        break;
+                        break;//
 
-                    case 1: // Adatkiírás
+                    case 1: // Bejelentkezés
 
                         Console.Clear();
                         Console.ForegroundColor = ConsoleColor.Yellow;
@@ -415,7 +415,7 @@ namespace VernyomasNaplo
 
                 if (currentPoint == 0)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.ForegroundColor = ConsoleColor.Blue;
                 }
                 else
                 {
@@ -433,7 +433,7 @@ namespace VernyomasNaplo
                 Console.WriteLine("Bejelentkezés");
                 if (currentPoint == 2)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.ForegroundColor = ConsoleColor.Red;
                 }
                 else
                 {
