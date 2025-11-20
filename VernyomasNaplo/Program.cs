@@ -136,7 +136,7 @@ namespace VernyomasNaplo
                 Console.WriteLine("Mérési adatok kiírása");
                 if (cPoint == 2)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.ForegroundColor = ConsoleColor.Red;
                 }
                 else
                 {
@@ -328,7 +328,7 @@ namespace VernyomasNaplo
                 Console.WriteLine("Felhasználó módosítása/törlése (ADMIN)");
                 if (cPoint == 4)
                 {
-                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.ForegroundColor = ConsoleColor.Red;
                 }
                 else
                 {
