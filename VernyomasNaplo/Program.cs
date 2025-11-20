@@ -10,6 +10,9 @@ namespace VernyomasNaplo
     internal class Program
     {
         static int cPoint = 0;
+        static double normal = 0;
+        static double high = 0;
+        static double low = 0;
         static string user;
         static List<string> records;
 
@@ -146,7 +149,6 @@ namespace VernyomasNaplo
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
-
 
         /// <summary>
         /// A LoggedinMenu() bővített változata, adminisztrátori jogosultságokkal. Itt a felhasználó módosíthat mérési adatokat és felhasználókat is. Ez a menü a nyilakkal irányítható.
@@ -629,8 +631,8 @@ namespace VernyomasNaplo
             foreach (string record in records)
             {
                 Console.Write($"| {record.Split(';')[0]} | {record.Split(';')[1]}\t| {RateBloodPressure(record.Split(';')[2])}\t|\n");
-                Console.ResetColor();
             }
+            AnalyseRatios();
         }
 
         /// <summary>
@@ -740,13 +742,27 @@ namespace VernyomasNaplo
             double ratio = double.Parse(record.Split('/')[0]) / double.Parse(record.Split('/')[1]);
             if (ratio > 1.6)
             {
+                high++;
                 return $"\u001b[31m{record} (Magas)\u001b[0m";
             }
             else if (ratio < 1.4)
             {
+                low++;
                 return $"\u001b[94m{record} (Alacsony)\u001b[0m";
             }
+            normal++;
             return $"\u001b[32m{record} (Jó)\u001b[0m\t";
+        }
+
+        /// <summary>
+        /// Kiértékeli hogy a mérések hány százaléka volt jó, magas vagy alacsony, mellé adva azt is, hogy hány mérésből hány volt az adott kategóriába.
+        /// </summary>
+        static void AnalyseRatios()
+        {
+            double sum = normal + high + low;
+            Console.WriteLine($"\u001b[32m{Math.Round((normal / sum) * 100, 2)}% Jó ({sum}-ból {normal})\u001b[0m\t");
+            Console.WriteLine($"\u001b[31m{Math.Round((high / sum) * 100, 2)} % Alacsony (({sum}-ból {high})\u001b[0m\t");
+            Console.WriteLine($"\u001b[94m{Math.Round((low / sum) * 100, 2)}% Alacsony ({sum}-ból {low})\u001b[0m\t");
         }
     }
 }
