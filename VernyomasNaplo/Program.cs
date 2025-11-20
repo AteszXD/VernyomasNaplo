@@ -14,6 +14,7 @@ namespace VernyomasNaplo
         static double high = 0;
         static double low = 0;
         static string user;
+        static string targetUser;
         static List<string> records;
 
         static void Main(string[] _)
@@ -22,7 +23,7 @@ namespace VernyomasNaplo
         }
 
         /// <summary>
-        /// A bejelentkezés után megnyíló menü kezelése. A felhasználó itt tudja megnézni méréseit és újat rögzíteni (illetve kilépni). Ez a menü a nyilakkal irányítható.
+        /// A bejelentkezés után megnyíló menü kezelése. A felhasználó itt tudja megnézni méréseit és újat rögzíteni (illetve kilépni).
         /// </summary>
         static void LoggedinMenu()
         {
@@ -151,12 +152,11 @@ namespace VernyomasNaplo
         }
 
         /// <summary>
-        /// A LoggedinMenu() bővített változata, adminisztrátori jogosultságokkal. Itt a felhasználó módosíthat mérési adatokat és felhasználókat is. Ez a menü a nyilakkal irányítható.
+        /// A LoggedinMenu() bővített változata, adminisztrátori jogosultságokkal. Itt a felhasználó módosíthat mérési adatokat és felhasználókat is.
         /// </summary>
         static void LoggedinAdminMenu()
         {
             cPoint = 0;
-            string targetUser;
             do
             {
                 bool selected = false;
@@ -245,31 +245,7 @@ namespace VernyomasNaplo
                         Console.WriteLine("*** FELHASZNÁLÓ MÓDOSÍTÁSA/TÖRLÉSE ***");
                         Console.ForegroundColor = ConsoleColor.White;
 
-                        List<string> users;
-                        users = File.ReadAllLines($"users.csv").ToList();
-                        foreach (string user in users)
-                        {
-                            Console.WriteLine(user.Split(';')[0]);
-                        }
-
-                        Console.WriteLine("Kérem adja meg a törlendő felhasználó nevét: ");
-                        targetUser = Console.ReadLine();
-
-                        bool userFound = false;
-
-                        for (int i = 0; i < users.Count; i++)
-                        {
-                            if (users[i].Split(';')[0] == targetUser)
-                            {
-                                userFound = true;
-                                users.RemoveAt(i);
-                                File.WriteAllLines("users.csv", users, Encoding.UTF8);
-                                File.Delete($"Users/{targetUser}.csv");
-                                Console.WriteLine("A felhasználó sikeresen törölve. Enterre tovább...");
-                                Console.ReadLine();
-                                break;
-                            }
-                        }
+                        DisplayUsersMenu();
 
                         break;
 
@@ -279,7 +255,7 @@ namespace VernyomasNaplo
                         Console.Write("Biztosan kilép? (i/n): ");
                         if (Console.ReadKey().Key != ConsoleKey.I)
                         {
-                            Program.cPoint = 0;
+                            cPoint = 0;
                         }
                         break;
                 }
@@ -342,7 +318,7 @@ namespace VernyomasNaplo
         }
 
         /// <summary>
-        /// Program indításakor megjelenő menü kezelése. A felhasználó itt tud választani a bejelentkezés és új felhasználó regisztrálása között (vagy kilépni). Ez a menü a nyilakkal irányítható.
+        /// Program indításakor megjelenő menü kezelése. A felhasználó itt tud választani a bejelentkezés és új felhasználó regisztrálása között (vagy kilépni)..
         /// </summary>
         static void LoginMenu()
         {
@@ -721,6 +697,100 @@ namespace VernyomasNaplo
                 Console.ReadLine();
 
             } while (cPoint != records.Count);
+        }
+
+        /// <summary>
+        /// Ebben a menüben lehet az adminisztrátornak felhasználókat törölni.
+        /// </summary>
+        static void DisplayUsersMenu()
+        {
+            int userAmount;
+            void ShowMenu4(int cPoint)
+            {
+                string[] users = File.ReadAllLines("users.csv");
+                userAmount = users.Length;
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("*** VÉRNYOMÁSNAPLÓ ***");
+                Console.ForegroundColor = ConsoleColor.White;
+
+                for (int i = 0; i < userAmount; i++)
+                {
+                    if (i == cPoint)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    Console.WriteLine(users[i].Split(';')[0]);
+                }
+
+                if (cPoint == userAmount)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                Console.WriteLine("Vissza a főmenübe");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+
+            do
+            {
+                bool selected = false;
+                do
+                {
+                    ShowMenu4(cPoint);
+                    switch (Console.ReadKey().Key)
+                    {
+                        case ConsoleKey.Enter:
+                            selected = true;
+                            break;
+                        case ConsoleKey.UpArrow:
+                            if (cPoint > 0)
+                            {
+                                cPoint -= 1;
+                            }
+                            break;
+                        case ConsoleKey.DownArrow:
+                            if (cPoint < userAmount)
+                            {
+                                cPoint += 1;
+                            }
+                            break;
+                    }
+                } while (!selected);
+
+                if (cPoint == userAmount)
+                {
+                    break;
+                }
+
+                List<string> users;
+                users = File.ReadAllLines($"users.csv").ToList();
+
+                targetUser = users[cPoint].Split(';')[0];
+                Console.WriteLine(targetUser);
+
+                for (int i = 0; i < users.Count; i++)
+                {
+                    if (users[i].Split(';')[0] == targetUser)
+                    {
+                        Console.WriteLine(targetUser);
+                        users.RemoveAt(i);
+                        File.WriteAllLines("users.csv", users, Encoding.UTF8);
+                        File.Delete($"Users/{targetUser}.csv");
+                        Console.WriteLine($"A felhasználó sikeresen törölve. Enterre tovább...");
+                        Console.ReadLine();
+                        break;
+                    }
+                }
+
+            } while (cPoint != userAmount);
         }
 
         /// <summary>
