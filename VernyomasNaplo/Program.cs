@@ -942,18 +942,16 @@ namespace VernyomasNaplo
         static string RateBloodPressure(string record)
         {
             double ratio = double.Parse(record.Split('/')[0]) / double.Parse(record.Split('/')[1]);
+
             if (ratio > 1.6)
-            {
-                high++;
-                return $"\u001b[31m{record} (Magas)\u001b[0m";
+            { 
+                return $"\u001b[31m{record} (Magas)\u001b[0m"; 
             }
-            else if (ratio < 1.4)
+            else if (ratio < 1.4) 
             {
-                low++;
                 return $"\u001b[94m{record} (Alacsony)\u001b[0m";
             }
-            normal++;
-            return $"\u001b[32m{record} (Jó)\u001b[0m\t";
+            return $"\u001b[32m{record} (Jó)\u001b[0m";
         }
 
         /// <summary>
@@ -961,13 +959,23 @@ namespace VernyomasNaplo
         /// </summary>
         static void AnalyseRatios()
         {
+            double normal = 0;
+            double high = 0; 
+            double low = 0;
+
+            foreach (string record in records)
+            {
+                double ratio = double.Parse(record.Split(';')[2].Split('/')[0]) / double.Parse(record.Split(';')[2].Split('/')[1]);
+
+                if (ratio > 1.6) high++;
+                else if (ratio < 1.4) low++;
+                else normal++;
+            }
+
             double sum = normal + high + low;
             WriteCentered($"\u001b[32m{Math.Round((normal / sum) * 100, 2)}% Jó ({sum}-ból {normal})\u001b[0m");
-            WriteCentered($"\u001b[31m{Math.Round((high / sum) * 100, 2)} % Magas ({sum}-ból {high})\u001b[0m");
+            WriteCentered($"\u001b[31m{Math.Round((high / sum) * 100, 2)}% Magas ({sum}-ból {high})\u001b[0m");
             WriteCentered($"\u001b[94m{Math.Round((low / sum) * 100, 2)}% Alacsony ({sum}-ból {low})\u001b[0m");
-            normal = 0;
-            high = 0;
-            low = 0;
         }
 
         /// <summary>
@@ -1005,6 +1013,5 @@ namespace VernyomasNaplo
             // Kurzor pozíciójának beállítása.
             return Console.ReadLine();
         }
-
     }
 }
