@@ -484,7 +484,7 @@ namespace VernyomasNaplo
 
             // Jelszó bekérése és titkosítása (SHA256)
             string password = ReadCentered("Jelszó: ");
-            password = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(password)).ToString().Replace("-", "").ToLower();
+            string hashedPassword = HashPassword(password);
 
             // Születési dátum bekérése, ezt majd DateTime-mal kéne megoldani.
             string birthDate = ReadCentered("Születési dátum (ÉÉÉÉ-HH-NN): ");
@@ -497,7 +497,7 @@ namespace VernyomasNaplo
             } while (gender != "férfi" && gender != "nő");
 
             // Felhasználó létrehozása és mentése a users.csv fájlba
-            File.AppendAllText("users.csv", $"{username};{password};{gender};{birthDate}\n", Encoding.UTF8);
+            File.AppendAllText("users.csv", $"{username};{hashedPassword};{gender};{birthDate}\n", Encoding.UTF8);
             File.Create($"{username}.csv").Close();
             File.Move($"{username}.csv", $"Users/{username}.csv");
             user = username;
@@ -528,6 +528,7 @@ namespace VernyomasNaplo
 
                 string username = ReadCentered("Felhasználónév: ");
                 string password = ReadCentered("Jelszó: ");
+                string hashedInput = HashPassword(password);
                 Console.Clear();
 
                 // Felhasználónév és jelszó ellenőrzése
@@ -537,7 +538,7 @@ namespace VernyomasNaplo
                     if (username == u.Split(';')[0]) // Ha megtalálta a felhasználónevet
                     {
                         userExists = true;
-                        if (SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(password)).ToString().Replace("-", "").ToLower() == u.Split(';')[1]) // Ha a jelszó is stimmel
+                        if (hashedInput == u.Split(';')[1]) // Ha a jelszó is stimmel
                         {
                             loggedIn = true;
                             user = username;
@@ -1000,6 +1001,20 @@ namespace VernyomasNaplo
 
             // Kurzor pozíciójának beállítása.
             return Console.ReadLine();
+        }
+
+        /// <summary>
+        /// Titkosítja a jelszót SHA256-tal.
+        /// </summary>
+        /// <param name="password">A titkosítatlan jelszó</param>
+        /// <returns>A titkosított jelszót</returns>
+        static string HashPassword(string password)
+        {
+            using (SHA256 sha = SHA256.Create())
+            {
+                byte[] bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return BitConverter.ToString(bytes).Replace("-", "").ToLower();
+            }
         }
     }
 }
