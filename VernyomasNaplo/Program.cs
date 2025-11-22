@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Security.Cryptography;
 
 namespace VernyomasNaplo
 {
@@ -421,24 +422,16 @@ namespace VernyomasNaplo
         /// </summary>
         static void CheckUsersFile()
         {
-            if (!File.Exists("users.csv")) // Nem --> Létrehozzuk a .csvt és a mappát is, ez egy első indítás
+            if (!File.Exists("users.csv")) // Nem --> Létrehozzuk a .csvt és a mappát is, az admin fiókkal. ez egy első indítás
             {
-                File.Create("users.csv").Close();
+                string adminPass = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes("admin")).ToString().Replace("-", "").ToLower();
+                File.AppendAllText("users.csv", $"admin;{adminPass};férfi;1970-01-01\n", Encoding.UTF8);
                 Directory.CreateDirectory("Users");
-                Register();
             }
 
             else // Igen --> Ha üres: nincs felhasználó, regisztráció | van felhasználó, menü
             {
-                FileInfo users = new FileInfo("users.csv");
-                if (users.Length > 0)
-                {
-                    LoginMenu();
-                }
-                else
-                {
-                    Register();
-                }
+                LoginMenu();
             }
         }
 
@@ -491,8 +484,9 @@ namespace VernyomasNaplo
                 }
             } while (!allowed);
 
-            // Jelszó bekérése
+            // Jelszó bekérése és titkosítása (SHA256)
             string password = ReadCentered("Jelszó: ");
+            password = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(password)).ToString().Replace("-", "").ToLower();
 
             // Születési dátum bekérése, ezt majd DateTime-mal kéne megoldani.
             string birthDate = ReadCentered("Születési dátum (ÉÉÉÉ-HH-NN): ");
@@ -545,7 +539,7 @@ namespace VernyomasNaplo
                     if (username == u.Split(';')[0]) // Ha megtalálta a felhasználónevet
                     {
                         userExists = true;
-                        if (password == u.Split(';')[1]) // Ha a jelszó is stimmel
+                        if (SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(password)).ToString().Replace("-", "").ToLower() == u.Split(';')[1]) // Ha a jelszó is stimmel
                         {
                             loggedIn = true;
                             user = username;
