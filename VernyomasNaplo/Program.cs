@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace VernyomasNaplo
 {
@@ -744,8 +743,7 @@ namespace VernyomasNaplo
 
                     if (i == highlightIndex)
                     {
-                        Console.BackgroundColor = ConsoleColor.DarkGray;
-                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
                     }
 
                     WriteCentered($"│ {name} │ {date} │ {bp} │");
@@ -758,8 +756,7 @@ namespace VernyomasNaplo
                 string exitText = CenterText("Vissza a főmenübe", nameWidth + dateWidth + bpWidth + 6);
                 if (highlightIndex == records.Count)
                 {
-                    Console.BackgroundColor = ConsoleColor.DarkGray;
-                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.Yellow;
                 }
                 WriteCentered($"{exitText}");
                 Console.ResetColor();
@@ -867,8 +864,7 @@ namespace VernyomasNaplo
 
                     if (i == highlightIndex)
                     {
-                        Console.BackgroundColor = ConsoleColor.DarkGray;
-                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
                     }
 
                     WriteCentered(row);
@@ -878,8 +874,7 @@ namespace VernyomasNaplo
                 exitText = CenterText("Vissza a főmenübe", nameWidth);
                 if (highlightIndex == users.Count)
                 {
-                    Console.BackgroundColor = ConsoleColor.DarkGray;
-                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.Yellow;
                 }
                 WriteCentered($"│ {exitText} │");
                 Console.ResetColor();
@@ -968,7 +963,7 @@ namespace VernyomasNaplo
         {
             double sum = normal + high + low;
             WriteCentered($"\u001b[32m{Math.Round((normal / sum) * 100, 2)}% Jó ({sum}-ból {normal})\u001b[0m");
-            WriteCentered($"\u001b[31m{Math.Round((high / sum) * 100, 2)} % Magas (({sum}-ból {high})\u001b[0m");
+            WriteCentered($"\u001b[31m{Math.Round((high / sum) * 100, 2)} % Magas ({sum}-ból {high})\u001b[0m");
             WriteCentered($"\u001b[94m{Math.Round((low / sum) * 100, 2)}% Alacsony ({sum}-ból {low})\u001b[0m");
             normal = 0;
             high = 0;
@@ -981,8 +976,15 @@ namespace VernyomasNaplo
         /// <param name="text">A szöveg amit középre kell írni.</param>
         static void WriteCentered(string text)
         {
+            // Az ANSI kódok eltávolítása a hosszúság számításához, mert valamiért beleszámít.
+            string StripAnsi(string Rtext)
+            {
+                return System.Text.RegularExpressions.Regex.Replace(Rtext, @"\u001b\[[0-9;]*m", "");
+            }
+            string temptext = StripAnsi(text);
+
             int width = Console.WindowWidth;
-            int leftPadding = (width - text.Length) / 2;
+            int leftPadding = (width - temptext.Length) / 2;
             if (leftPadding < 0) leftPadding = 0;
             Console.WriteLine(new string(' ', leftPadding) + text);
         }
