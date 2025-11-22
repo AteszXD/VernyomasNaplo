@@ -427,12 +427,10 @@ namespace VernyomasNaplo
                 string adminPass = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes("admin")).ToString().Replace("-", "").ToLower();
                 File.AppendAllText("users.csv", $"admin;{adminPass};férfi;1970-01-01\n", Encoding.UTF8);
                 Directory.CreateDirectory("Users");
+                File.Create("Users/admin.csv").Close();
             }
-
-            else // Igen --> Ha üres: nincs felhasználó, regisztráció | van felhasználó, menü
-            {
-                LoginMenu();
-            }
+            
+            LoginMenu();
         }
 
         /// <summary>
