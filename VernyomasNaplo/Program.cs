@@ -60,21 +60,21 @@ namespace VernyomasNaplo
 
                         Console.Clear();
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("*** ÚJ MÉRÉS RÖGZÍTÉSE ***");
+                        WriteCentered("*** ÚJ MÉRÉS RÖGZÍTÉSE ***");
                         Console.ForegroundColor = ConsoleColor.White;
 
-                        Console.Write("Adja meg a vérnyomás értékét: ");
-                        string record = Console.ReadLine();
+                        WriteCentered("Adja meg a vérnyomás értékét: ");
+                        string record = ReadCentered("");
                         WriteCSVFile(record, user);
 
-                        Console.WriteLine("Az adatokat sikeresen rögzítettük. Enterre tovább...");
+                        WriteCentered("Az adatokat sikeresen rögzítettük. Enterre tovább...");
                         Console.ReadLine();
                         Console.Clear();
 
                         ReadCSVFile(user);
                         DisplayRecords();
 
-                        Console.WriteLine("Enterre tovább...");
+                        WriteCentered("Enterre tovább...");
                         Console.ReadLine();
 
                         break;
@@ -83,12 +83,12 @@ namespace VernyomasNaplo
 
                         Console.Clear();
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("*** ADATKIÍRÁS ***");
+                        WriteCentered("*** ADATKIÍRÁS ***");
                         Console.ForegroundColor = ConsoleColor.White;
 
                         DisplayRecords();
 
-                        Console.WriteLine("Enterre tovább...");
+                        WriteCentered("Enterre tovább...");
                         Console.ReadLine();
 
                         break;
@@ -96,7 +96,7 @@ namespace VernyomasNaplo
                     case 2: // Kilépés
                         Console.Clear();
                         Console.Beep();
-                        Console.Write("Biztosan kilép? (i/n): ");
+                        WriteCentered("Biztosan kilép? (i/n): ");
                         if (Console.ReadKey().Key == ConsoleKey.I)
                         {
                             // Vissza a főmenübe
@@ -116,7 +116,7 @@ namespace VernyomasNaplo
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("*** VÉRNYOMÁSNAPLÓ ***");
+                WriteCentered("*** VÉRNYOMÁSNAPLÓ ***");
                 Console.ForegroundColor = ConsoleColor.White;
 
                 if (cPoint == 0)
@@ -127,7 +127,7 @@ namespace VernyomasNaplo
                 {
                     Console.ForegroundColor = ConsoleColor.White;
                 }
-                Console.WriteLine("Új mérési adatok rögzítése");
+                WriteCentered("Új mérési adatok rögzítése");
                 if (cPoint == 1)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
@@ -136,7 +136,7 @@ namespace VernyomasNaplo
                 {
                     Console.ForegroundColor = ConsoleColor.White;
                 }
-                Console.WriteLine("Mérési adatok kiírása");
+                WriteCentered("Mérési adatok kiírása");
                 if (cPoint == 2)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -145,7 +145,7 @@ namespace VernyomasNaplo
                 {
                     Console.ForegroundColor = ConsoleColor.White;
                 }
-                Console.WriteLine("Kilépés");
+                WriteCentered("Kilépés");
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
@@ -188,21 +188,21 @@ namespace VernyomasNaplo
 
                         Console.Clear();
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("*** ÚJ MÉRÉS RÖGZÍTÉSE ***");
+                        WriteCentered("*** ÚJ MÉRÉS RÖGZÍTÉSE ***");
                         Console.ForegroundColor = ConsoleColor.White;
 
-                        Console.Write("Adja meg a vérnyomás értékét: ");
-                        string record = Console.ReadLine();
+                        WriteCentered("Adja meg a vérnyomás értékét: ");
+                        string record = ReadCentered("");
                         WriteCSVFile(record, user);
 
-                        Console.WriteLine("Az adatokat sikeresen rögzítettük. Enterre tovább...");
+                        WriteCentered("Az adatokat sikeresen rögzítettük. Enterre tovább...");
                         Console.ReadLine();
                         Console.Clear();
 
                         ReadCSVFile(user);
                         DisplayRecords();
 
-                        Console.WriteLine("Enterre tovább...");
+                        WriteCentered("Enterre tovább...");
                         Console.ReadLine();
 
                         break;
@@ -211,13 +211,13 @@ namespace VernyomasNaplo
 
                         Console.Clear();
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("*** ADATKIÍRÁS ***");
+                        WriteCentered("*** ADATKIÍRÁS ***");
                         Console.ForegroundColor = ConsoleColor.White;
 
                         ReadCSVFile(user);
                         DisplayRecords();
 
-                        Console.WriteLine("Enterre tovább...");
+                        WriteCentered("Enterre tovább...");
                         Console.ReadLine();
 
                         break;
@@ -226,11 +226,10 @@ namespace VernyomasNaplo
 
                         Console.Clear();
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("*** MÉRÉSI ADAT MÓDOSÍTÁSA ***");
+                        WriteCentered("*** MÉRÉSI ADAT MÓDOSÍTÁSA ***");
                         Console.ForegroundColor = ConsoleColor.White;
 
-                        Console.Write("Adja meg a módosítandó felhasználó nevét: ");
-                        targetUser = Console.ReadLine();
+                        targetUser = ReadCentered("Adja meg a módosítandó felhasználó nevét: ");
 
                         ReadCSVFile(targetUser);
                         DisplayRecordsMenu(targetUser);
@@ -241,7 +240,7 @@ namespace VernyomasNaplo
 
                         Console.Clear();
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("*** FELHASZNÁLÓ MÓDOSÍTÁSA/TÖRLÉSE ***");
+                        WriteCentered("*** FELHASZNÁLÓ MÓDOSÍTÁSA/TÖRLÉSE ***");
                         Console.ForegroundColor = ConsoleColor.White;
 
                         DisplayUsersMenu();
@@ -251,7 +250,7 @@ namespace VernyomasNaplo
                     case 4: // Kilépés
                         Console.Clear();
                         Console.Beep();
-                        Console.Write("Biztosan kilép? (i/n): ");
+                        WriteCentered("Biztosan kilép? (i/n): ");
                         if (Console.ReadKey().Key != ConsoleKey.I)
                         {
                             cPoint = 0;
@@ -264,7 +263,7 @@ namespace VernyomasNaplo
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("*** VÉRNYOMÁSNAPLÓ (ADMIN) ***");
+                WriteCentered("*** VÉRNYOMÁSNAPLÓ (ADMIN) ***");
                 Console.ForegroundColor = ConsoleColor.White;
 
                 if (cPoint == 0)
@@ -275,7 +274,7 @@ namespace VernyomasNaplo
                 {
                     Console.ForegroundColor = ConsoleColor.White;
                 }
-                Console.WriteLine("Új mérési adatok rögzítése");
+                WriteCentered("Új mérési adatok rögzítése");
                 if (cPoint == 1)
                 {
                     Console.ForegroundColor = ConsoleColor.Blue;
@@ -284,7 +283,7 @@ namespace VernyomasNaplo
                 {
                     Console.ForegroundColor = ConsoleColor.White;
                 }
-                Console.WriteLine("Mérési adatok kiírása");
+                WriteCentered("Mérési adatok kiírása");
                 if (cPoint == 2)
                 {
                     Console.ForegroundColor = ConsoleColor.Blue;
@@ -293,7 +292,7 @@ namespace VernyomasNaplo
                 {
                     Console.ForegroundColor = ConsoleColor.White;
                 }
-                Console.WriteLine("Mérési adat módosítása (ADMIN)");
+                WriteCentered("Mérési adat módosítása (ADMIN)");
                 if (cPoint == 3)
                 {
                     Console.ForegroundColor = ConsoleColor.Blue;
@@ -302,7 +301,7 @@ namespace VernyomasNaplo
                 {
                     Console.ForegroundColor = ConsoleColor.White;
                 }
-                Console.WriteLine("Felhasználó módosítása/törlése (ADMIN)");
+                WriteCentered("Felhasználó módosítása/törlése (ADMIN)");
                 if (cPoint == 4)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -311,7 +310,7 @@ namespace VernyomasNaplo
                 {
                     Console.ForegroundColor = ConsoleColor.White;
                 }
-                Console.WriteLine("Kilépés");
+                WriteCentered("Kilépés");
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
@@ -353,7 +352,7 @@ namespace VernyomasNaplo
 
                         Console.Clear();
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("*** REGISZTRÁCIÓ ***");
+                        WriteCentered("*** REGISZTRÁCIÓ ***");
                         Console.ForegroundColor = ConsoleColor.White;
 
                         Register();
@@ -364,7 +363,7 @@ namespace VernyomasNaplo
 
                         Console.Clear();
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("*** BEJELENTKEZÉS ***");
+                        WriteCentered("*** BEJELENTKEZÉS ***");
                         Console.ForegroundColor = ConsoleColor.White;
 
                         Login();
@@ -374,7 +373,7 @@ namespace VernyomasNaplo
                     case 2: // Kilépés
                         Console.Clear();
                         Console.Beep();
-                        Console.Write("Biztosan kilép? (i/n): ");
+                        WriteCentered("Biztosan kilép? (i/n): ");
                         if (Console.ReadKey().Key != ConsoleKey.I)
                         {
                             cPoint = 0;
@@ -387,7 +386,7 @@ namespace VernyomasNaplo
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("*** VÉRNYOMÁSNAPLÓ ***");
+                WriteCentered("*** VÉRNYOMÁSNAPLÓ ***");
                 Console.ForegroundColor = ConsoleColor.White;
 
                 if (currentPoint == 0)
@@ -398,7 +397,7 @@ namespace VernyomasNaplo
                 {
                     Console.ForegroundColor = ConsoleColor.White;
                 }
-                Console.WriteLine("Regisztráció");
+                WriteCentered("Regisztráció");
                 if (currentPoint == 1)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
@@ -407,7 +406,7 @@ namespace VernyomasNaplo
                 {
                     Console.ForegroundColor = ConsoleColor.White;
                 }
-                Console.WriteLine("Bejelentkezés");
+                WriteCentered("Bejelentkezés");
                 if (currentPoint == 2)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -416,7 +415,7 @@ namespace VernyomasNaplo
                 {
                     Console.ForegroundColor = ConsoleColor.White;
                 }
-                Console.WriteLine("Kilépés");
+                WriteCentered("Kilépés");
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
@@ -460,14 +459,14 @@ namespace VernyomasNaplo
             do
             {
                 allowed = true;
-                Console.Write("Felhasználónév: ");
-                username = Console.ReadLine();
+                WriteCentered("Felhasználónév: ");
+                username = ReadCentered("Felhasználónév: ");
 
                 // 1. Üres név kezelése
                 if (string.IsNullOrEmpty(username))
                 {
                     Console.Clear();
-                    Console.WriteLine("A felhasználónév nem lehet üres!");
+                    WriteCentered("A felhasználónév nem lehet üres!");
                     allowed = false;
                 }
 
@@ -477,7 +476,7 @@ namespace VernyomasNaplo
                     if (username.Contains(specialChar))
                     {
                         Console.Clear();
-                        Console.WriteLine("A felhasználónév nem tartalmazhat speciális karaktereket! (\\ / : * ? \" < > |)");
+                        WriteCentered("A felhasználónév nem tartalmazhat speciális karaktereket! (\\ / : * ? \" < > |)");
                         allowed = false;
                         break;
                     }
@@ -490,7 +489,7 @@ namespace VernyomasNaplo
                     if (username == user.Split(';')[0])
                     {
                         Console.Clear();
-                        Console.WriteLine("A felhasználó már létezik!");
+                        WriteCentered("A felhasználó már létezik!");
                         allowed = false;
                         break;
                     }
@@ -498,19 +497,16 @@ namespace VernyomasNaplo
             } while (!allowed);
 
             // Jelszó bekérése
-            Console.Write("Jelszó: ");
-            string password = Console.ReadLine();
+            string password = ReadCentered("Jelszó: ");
 
             // Születési dátum bekérése, ezt majd DateTime-mal kéne megoldani.
-            Console.Write("Születési dátum (ÉÉÉÉ-HH-NN): ");
-            string birthDate = Console.ReadLine();
+            string birthDate = ReadCentered("Születési dátum (ÉÉÉÉ-HH-NN): ");
 
             // Nem bekérése, csak Férfi vagy Nő lehet
             string gender;
             do
             {
-                Console.Write("Neme (Férfi/Nő): ");
-                gender = Console.ReadLine().ToLower();
+                gender = ReadCentered("Neme (Férfi/Nő): ").ToLower();
             } while (gender != "férfi" && gender != "nő");
 
             // Felhasználó létrehozása és mentése a users.csv fájlba
@@ -543,10 +539,8 @@ namespace VernyomasNaplo
                 loggedIn = false;
                 userExists = false;
 
-                Console.Write("Felhasználónév: ");
-                string username = Console.ReadLine();
-                Console.Write("Jelszó: ");
-                string password = Console.ReadLine();
+                string username = ReadCentered("Felhasználónév: ");
+                string password = ReadCentered("Jelszó: ");
                 Console.Clear();
 
                 // Felhasználónév és jelszó ellenőrzése
@@ -575,7 +569,7 @@ namespace VernyomasNaplo
                         else // Ha a jelszó nem stimmel
                         {
                             Console.Clear();
-                            Console.WriteLine("Hibás jelszó!");
+                            WriteCentered("Hibás jelszó!");
                             break;
                         }
                     }
@@ -584,7 +578,7 @@ namespace VernyomasNaplo
                 if (!userExists) // Ha nem találta meg a felhasználónevet
                 {
                     Console.Clear();
-                    Console.WriteLine("A felhasználó nem létezik!");
+                    WriteCentered("A felhasználó nem létezik!");
                 }
             } while (!loggedIn);
         }
@@ -605,7 +599,7 @@ namespace VernyomasNaplo
         {
             if (records.Count == 0)
             {
-                Console.WriteLine($"{user} felhasználónak nincsenek mérései.");
+                WriteCentered($"{user} felhasználónak nincsenek mérései.");
                 return;
             }
 
@@ -650,9 +644,9 @@ namespace VernyomasNaplo
             // Fejléc
             string header = $"│ {CenterText("Dátum", nameWidth)} │ {CenterText("Vérnyomás", dateWidth)} │ {CenterText("Értékelés", bpWidth)} │";
 
-            Console.WriteLine(top);
-            Console.WriteLine(header);
-            Console.WriteLine(separator);
+            WriteCentered(top);
+            WriteCentered(header);
+            WriteCentered(separator);
 
             // Sorok
             foreach (string record in records)
@@ -667,11 +661,11 @@ namespace VernyomasNaplo
                 string date = CenterText(parts[1], dateWidth);
                 string bp = CenterText(RateBloodPressure(parts[2]), bpWidth);
 
-                Console.WriteLine($"│ {name} │ {date} │ {bp} │");
+                WriteCentered($"│ {name} │ {date} │ {bp} │");
             }
 
             // Lábléc
-            Console.WriteLine(bottom);
+            WriteCentered(bottom);
 
             AnalyseRatios();
         }
@@ -684,7 +678,7 @@ namespace VernyomasNaplo
         {
             if (records.Count == 0)
             {
-                Console.WriteLine($"{user} felhasználónak nincsenek mérései.");
+                WriteCentered($"{user} felhasználónak nincsenek mérései.");
                 return;
             }
 
@@ -736,9 +730,9 @@ namespace VernyomasNaplo
                 // Fejléc
                 string header = $"│ {CenterText("Dátum", nameWidth)} │ {CenterText("Vérnyomás", dateWidth)} │ {CenterText("Értékelés", bpWidth)} │";
 
-                Console.WriteLine(top);
-                Console.WriteLine(header);
-                Console.WriteLine(separator);
+                WriteCentered(top);
+                WriteCentered(header);
+                WriteCentered(separator);
 
                 // Sorok
                 for (int i = 0; i < records.Count; i++)
@@ -754,11 +748,11 @@ namespace VernyomasNaplo
                         Console.ForegroundColor = ConsoleColor.Black;
                     }
 
-                    Console.WriteLine($"│ {name} │ {date} │ {bp} │");
+                    WriteCentered($"│ {name} │ {date} │ {bp} │");
                     Console.ResetColor();
                 }
 
-                Console.WriteLine(bottom);
+                WriteCentered(bottom);
 
                 // Extra sor a kilépéshez
                 string exitText = CenterText("Vissza a főmenübe", nameWidth + dateWidth + bpWidth + 6);
@@ -767,7 +761,7 @@ namespace VernyomasNaplo
                     Console.BackgroundColor = ConsoleColor.DarkGray;
                     Console.ForegroundColor = ConsoleColor.Black;
                 }
-                Console.WriteLine($"{exitText}");
+                WriteCentered($"{exitText}");
                 Console.ResetColor();
 
             }
@@ -801,8 +795,8 @@ namespace VernyomasNaplo
 
                 // A kiválasztott mérés módosítása
                 Console.Clear();
-                Console.WriteLine($"Kiválasztott rekord: {records[menuPoint]}");
-                Console.Write("Adja meg az új vérnyomás értéket: ");
+                WriteCentered($"Kiválasztott rekord: {records[menuPoint]}");
+                WriteCentered("Adja meg az új vérnyomás értéket: ");
                 string newRecord = Console.ReadLine();
 
                 string[] recordParts = records[menuPoint].Split(';');
@@ -811,7 +805,7 @@ namespace VernyomasNaplo
 
                 File.WriteAllLines($"Users/{targetUser}.csv", records, Encoding.UTF8);
 
-                Console.WriteLine("A rekord sikeresen módosítva. Enterre tovább...");
+                WriteCentered("A rekord sikeresen módosítva. Enterre tovább...");
                 Console.ReadLine();
 
             } while (true);
@@ -826,7 +820,7 @@ namespace VernyomasNaplo
 
             if (users.Count == 0)
             {
-                Console.WriteLine("Nincsenek felhasználók!");
+                WriteCentered("Nincsenek felhasználók!");
                 Console.ReadLine();
                 return;
             }
@@ -862,9 +856,9 @@ namespace VernyomasNaplo
                 string separator = $"├{new string('─', nameWidth + 2)}┤";
                 string header = $"│ {CenterText("Felhasználó", nameWidth)} │";
 
-                Console.WriteLine(top);
-                Console.WriteLine(header);
-                Console.WriteLine(separator);
+                WriteCentered(top);
+                WriteCentered(header);
+                WriteCentered(separator);
 
                 for (int i = 0; i < users.Count; i++)
                 {
@@ -877,7 +871,7 @@ namespace VernyomasNaplo
                         Console.ForegroundColor = ConsoleColor.Black;
                     }
 
-                    Console.WriteLine(row);
+                    WriteCentered(row);
                     Console.ResetColor();
                 }
 
@@ -887,10 +881,10 @@ namespace VernyomasNaplo
                     Console.BackgroundColor = ConsoleColor.DarkGray;
                     Console.ForegroundColor = ConsoleColor.Black;
                 }
-                Console.WriteLine($"│ {exitText} │");
+                WriteCentered($"│ {exitText} │");
                 Console.ResetColor();
 
-                Console.WriteLine(bottom);
+                WriteCentered(bottom);
             }
 
             do
@@ -923,14 +917,14 @@ namespace VernyomasNaplo
                 string targetUser = users[menuPoint].Split(';')[0];
 
                 Console.Clear();
-                Console.WriteLine($"Biztosan törli a felhasználót: {targetUser}? (i/n): ");
+                WriteCentered($"Biztosan törli a felhasználót: {targetUser}? (i/n): ");
                 if (Console.ReadKey(true).Key == ConsoleKey.I)
                 {
                     users.RemoveAt(menuPoint);
                     File.WriteAllLines("users.csv", users, Encoding.UTF8);
                     File.Delete($"Users/{targetUser}.csv");
 
-                    Console.WriteLine($"\nA felhasználó {targetUser} sikeresen törölve. Enterre tovább...");
+                    WriteCentered($"\nA felhasználó {targetUser} sikeresen törölve. Enterre tovább...");
                     Console.ReadLine();
                 }
             } while (true);
@@ -973,9 +967,9 @@ namespace VernyomasNaplo
         static void AnalyseRatios()
         {
             double sum = normal + high + low;
-            Console.WriteLine($"\u001b[32m{Math.Round((normal / sum) * 100, 2)}% Jó ({sum}-ból {normal})\u001b[0m");
-            Console.WriteLine($"\u001b[31m{Math.Round((high / sum) * 100, 2)} % Magas (({sum}-ból {high})\u001b[0m");
-            Console.WriteLine($"\u001b[94m{Math.Round((low / sum) * 100, 2)}% Alacsony ({sum}-ból {low})\u001b[0m");
+            WriteCentered($"\u001b[32m{Math.Round((normal / sum) * 100, 2)}% Jó ({sum}-ból {normal})\u001b[0m");
+            WriteCentered($"\u001b[31m{Math.Round((high / sum) * 100, 2)} % Magas (({sum}-ból {high})\u001b[0m");
+            WriteCentered($"\u001b[94m{Math.Round((low / sum) * 100, 2)}% Alacsony ({sum}-ból {low})\u001b[0m");
             normal = 0;
             high = 0;
             low = 0;
@@ -992,5 +986,23 @@ namespace VernyomasNaplo
             if (leftPadding < 0) leftPadding = 0;
             Console.WriteLine(new string(' ', leftPadding) + text);
         }
+
+        /// <summary>
+        /// Középen olvasó függvény.
+        /// </summary>
+        /// <param name="prompt">A szöveg ami után közepen kell bekérni</param>
+        /// <returns>A beolvasott szöveg.</returns>
+        static string ReadCentered(string prompt)
+        {
+            int width = Console.WindowWidth;
+            int leftPadding = (width - prompt.Length) / 2;
+            if (leftPadding < 0) leftPadding = 0;
+
+            Console.Write(new string(' ', leftPadding) + prompt);
+
+            // Kurzor pozíciójának beállítása.
+            return Console.ReadLine();
+        }
+
     }
 }
