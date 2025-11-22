@@ -9,9 +9,6 @@ namespace VernyomasNaplo
     internal class Program
     {
         static int cPoint = 0;
-        static double normal = 0;
-        static double high = 0;
-        static double low = 0;
         static string user;
         static string targetUser;
         static List<string> records;
@@ -458,7 +455,6 @@ namespace VernyomasNaplo
             do
             {
                 allowed = true;
-                WriteCentered("Felhasználónév: ");
                 username = ReadCentered("Felhasználónév: ");
 
                 // 1. Üres név kezelése
