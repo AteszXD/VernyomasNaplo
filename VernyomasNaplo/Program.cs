@@ -603,6 +603,12 @@ namespace VernyomasNaplo
         /// </summary>
         static void DisplayRecords()
         {
+            if (records.Count == 0)
+            {
+                Console.WriteLine($"{user} felhasználónak nincsenek mérései.");
+                return;
+            }
+
             Console.WriteLine($"{user} Vérnyomásmérései");
             foreach (string record in records)
             {
