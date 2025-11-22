@@ -682,86 +682,139 @@ namespace VernyomasNaplo
         /// <param name="targetUser">A felhasználó akinek mérései közül módosítani szertnénk.</param>
         static void DisplayRecordsMenu(string targetUser)
         {
-            void ShowMenu3(int cPoint)
+            if (records.Count == 0)
+            {
+                Console.WriteLine($"{user} felhasználónak nincsenek mérései.");
+                return;
+            }
+
+            // Az ANSI kódok eltávolítása a hosszúság számításához, mert valamiért beleszámít.
+            string StripAnsi(string text)
+            {
+                return System.Text.RegularExpressions.Regex.Replace(text, @"\u001b\[[0-9;]*m", "");
+            }
+
+            // Cellákban lévő szöveg középre igazítása
+            string CenterText(string text, int width)
+            {
+                int visibleLength = StripAnsi(text).Length;
+                if (visibleLength >= width) return text;
+                int leftPadding = (width - visibleLength) / 2;
+                int rightPadding = width - visibleLength - leftPadding;
+                return new string(' ', leftPadding) + text + new string(' ', rightPadding);
+            }
+
+            // Oszlopok szélességének meghatározása
+            int dateWidth = "Dátum".Length;
+            int bpWidth = "Vérnyomás".Length;
+            int rateWidth = "Értékelés".Length;
+
+            foreach (string record in records)
+            {
+                string[] parts = record.Split(';');
+                if (parts.Length < 3) continue;
+
+                dateWidth = Math.Max(dateWidth, parts[1].Length);
+                bpWidth = Math.Max(bpWidth, parts[2].Length);
+                rateWidth = Math.Max(rateWidth, StripAnsi(RateBloodPressure(parts[2])).Length);
+            }
+
+            int menuPoint = 0;
+
+            /// <summary>
+            /// A napló táblázati megjelenítése a konzolon, kiemelve a kiválasztott sort. 
+            /// </summary>
+            void ShowTable(int highlightIndex)
             {
                 Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("*** VÉRNYOMÁSNAPLÓ ***");
-                Console.ForegroundColor = ConsoleColor.White;
 
+                // A táblázat kereteinek kialakítása
+                string top = $"┌{new string('─', dateWidth + 2)}┬{new string('─', bpWidth + 2)}┬{new string('─', rateWidth + 2)}┐";
+                string separator = $"├{new string('─', dateWidth + 2)}┼{new string('─', bpWidth + 2)}┼{new string('─', rateWidth + 2)}┤";
+                string bottom = $"└{new string('─', dateWidth + 2)}┴{new string('─', bpWidth + 2)}┴{new string('─', rateWidth + 2)}┘";
+
+                // Fejléc
+                string header = $"│ {CenterText("Dátum", dateWidth)} │ {CenterText("Vérnyomás", bpWidth)} │ {CenterText("Értékelés", rateWidth)} │";
+
+                Console.WriteLine(top);
+                Console.WriteLine(header);
+                Console.WriteLine(separator);
+
+                // Sorok
                 for (int i = 0; i < records.Count; i++)
                 {
-                    if (i == cPoint)
+                    string[] parts = records[i].Split(';');
+                    string date = CenterText(parts[1], dateWidth);
+                    string bp = CenterText(parts[2], bpWidth);
+                    string rate = CenterText(RateBloodPressure(parts[2]), rateWidth);
+
+                    if (i == highlightIndex)
                     {
-                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.BackgroundColor = ConsoleColor.DarkGray;
+                        Console.ForegroundColor = ConsoleColor.Black;
                     }
-                    else
-                    {
-                        Console.ForegroundColor = ConsoleColor.White;
-                    }
-                    Console.WriteLine(records[i]);
+
+                    Console.WriteLine($"│ {date} │ {bp} │ {rate} │");
+                    Console.ResetColor();
                 }
 
-                if (cPoint == records.Count)
+                Console.WriteLine(bottom);
+
+                // Extra sor a kilépéshez
+                string exitText = CenterText("Vissza a főmenübe", dateWidth + bpWidth + rateWidth + 6);
+                if (highlightIndex == records.Count)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.BackgroundColor = ConsoleColor.DarkGray;
+                    Console.ForegroundColor = ConsoleColor.Black;
                 }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                Console.WriteLine("Vissza a főmenübe");
-                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine($"{exitText}");
+                Console.ResetColor();
+
             }
 
             do
             {
                 bool selected = false;
+
                 do
                 {
-                    ShowMenu3(cPoint);
-                    switch (Console.ReadKey().Key)
+                    ShowTable(menuPoint);
+
+                    switch (Console.ReadKey(true).Key)
                     {
-                        case ConsoleKey.Enter:
-                            selected = true;
-                            break;
                         case ConsoleKey.UpArrow:
-                            if (cPoint > 0)
-                            {
-                                cPoint -= 1;
-                            }
+                            if (menuPoint > 0) menuPoint--;
                             break;
                         case ConsoleKey.DownArrow:
-                            if (cPoint < records.Count)
-                            {
-                                cPoint += 1;
-                            }
+                            if (menuPoint < records.Count) menuPoint++;
+                            break;
+                        case ConsoleKey.Enter:
+                            selected = true;
                             break;
                     }
                 } while (!selected);
 
-                if (cPoint == records.Count)
+                if (menuPoint == records.Count)
                 {
                     break;
                 }
 
+                // A kiválasztott mérés módosítása
                 Console.Clear();
-                Console.WriteLine($"Kiválasztott rekord: {records[cPoint]}");
+                Console.WriteLine($"Kiválasztott rekord: {records[menuPoint]}");
                 Console.Write("Adja meg az új vérnyomás értéket: ");
                 string newRecord = Console.ReadLine();
 
-                // A kiválasztott mérés módosítása
-                string[] recordParts = records[cPoint].Split(';');
-                recordParts[2] = newRecord; // Csak a vérnyomás értékét módosítjuk
-                records[cPoint] = string.Join(";", recordParts);
+                string[] recordParts = records[menuPoint].Split(';');
+                recordParts[2] = newRecord; // Vérnyomás érték frissítése
+                records[menuPoint] = string.Join(";", recordParts);
 
-                // A módosított mérés visszaírása a fájlba
                 File.WriteAllLines($"Users/{targetUser}.csv", records, Encoding.UTF8);
 
                 Console.WriteLine("A rekord sikeresen módosítva. Enterre tovább...");
                 Console.ReadLine();
 
-            } while (cPoint != records.Count);
+            } while (true);
         }
 
         /// <summary>
