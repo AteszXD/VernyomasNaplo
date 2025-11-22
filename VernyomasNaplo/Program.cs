@@ -609,11 +609,70 @@ namespace VernyomasNaplo
                 return;
             }
 
-            Console.WriteLine($"{user} Vérnyomásmérései");
+            // Az ANSI kódok eltávolítása a hosszúság számításához, mert valamiért beleszámít.
+            string StripAnsi(string text)
+            {
+                return System.Text.RegularExpressions.Regex.Replace(text, @"\u001b\[[0-9;]*m", "");
+            }
+
+            // Cellákban lévő szöveg középre igazítása
+            string CenterText(string text, int width)
+            {
+                string stripped = StripAnsi(text);
+                int padding = width - stripped.Length;
+                int padLeft = padding / 2;
+                int padRight = padding - padLeft;
+                return new string(' ', padLeft) + text + new string(' ', padRight);
+            }
+
+            // Oszlopok szélességének meghatározása
+            int dateWidth = "Dátum".Length;
+            int bpWidth = "Vérnyomás".Length;
+            int rateWidth = "Értékelés".Length;
+
             foreach (string record in records)
             {
-                Console.Write($"| {record.Split(';')[0]} | {record.Split(';')[1]}\t| {RateBloodPressure(record.Split(';')[2])}\t|\n");
+                string[] parts = record.Split(';');
+                if (parts.Length < 3) continue;
+
+                dateWidth = Math.Max(dateWidth, parts[1].Length);
+                bpWidth = Math.Max(bpWidth, parts[2].Length);
+
+                string rating = RateBloodPressure(parts[2]);
+                rateWidth = Math.Max(rateWidth, StripAnsi(rating).Length);
             }
+
+            // A táblázat kereteinek kialakítása
+            string top = $"┌{new string('─', dateWidth + 2)}┬{new string('─', bpWidth + 2)}┬{new string('─', rateWidth + 2)}┐";
+            string separator = $"├{new string('─', dateWidth + 2)}┼{new string('─', bpWidth + 2)}┼{new string('─', rateWidth + 2)}┤";
+            string bottom = $"└{new string('─', dateWidth + 2)}┴{new string('─', bpWidth + 2)}┴{new string('─', rateWidth + 2)}┘";
+
+            // Fejléc
+            string header = $"│ {CenterText("Dátum", dateWidth)} │ {CenterText("Vérnyomás", bpWidth)} │ {CenterText("Értékelés", rateWidth)} │";
+
+            Console.WriteLine(top);
+            Console.WriteLine(header);
+            Console.WriteLine(separator);
+
+            // Sorok
+            foreach (string record in records)
+            {
+                string[] parts = record.Split(';');
+                if (parts.Length < 3) 
+                { 
+                    continue; 
+                }
+
+                string date = CenterText(parts[1], dateWidth);
+                string bp = CenterText(parts[2], bpWidth);
+                string rate = CenterText(RateBloodPressure(parts[2]), rateWidth);
+
+                Console.WriteLine($"│ {date} │ {bp} │ {rate} │");
+            }
+
+            // Lábléc
+            Console.WriteLine(bottom);
+
             AnalyseRatios();
         }
 
@@ -836,9 +895,9 @@ namespace VernyomasNaplo
         static void AnalyseRatios()
         {
             double sum = normal + high + low;
-            Console.WriteLine($"\u001b[32m{Math.Round((normal / sum) * 100, 2)}% Jó ({sum}-ból {normal})\u001b[0m\t");
-            Console.WriteLine($"\u001b[31m{Math.Round((high / sum) * 100, 2)} % Alacsony (({sum}-ból {high})\u001b[0m\t");
-            Console.WriteLine($"\u001b[94m{Math.Round((low / sum) * 100, 2)}% Alacsony ({sum}-ból {low})\u001b[0m\t");
+            Console.WriteLine($"\u001b[32m{Math.Round((normal / sum) * 100, 2)}% Jó ({sum}-ból {normal})\u001b[0m");
+            Console.WriteLine($"\u001b[31m{Math.Round((high / sum) * 100, 2)} % Magas (({sum}-ból {high})\u001b[0m");
+            Console.WriteLine($"\u001b[94m{Math.Round((low / sum) * 100, 2)}% Alacsony ({sum}-ból {low})\u001b[0m");
             normal = 0;
             high = 0;
             low = 0;
