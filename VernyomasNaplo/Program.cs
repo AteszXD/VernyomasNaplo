@@ -424,8 +424,8 @@ namespace VernyomasNaplo
         {
             if (!File.Exists("users.csv")) // Nem --> Létrehozzuk a .csvt és a mappát is, az admin fiókkal. ez egy első indítás
             {
-                string adminPass = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes("admin")).ToString().Replace("-", "").ToLower();
-                File.AppendAllText("users.csv", $"admin;{adminPass};férfi;1970-01-01\n", Encoding.UTF8);
+                string adminPassword = HashPassword("admin");
+                File.AppendAllText("users.csv", $"admin;{adminPassword};férfi;1970-01-01\n", Encoding.UTF8);
                 Directory.CreateDirectory("Users");
                 File.Create("Users/admin.csv").Close();
             }
