@@ -626,29 +626,29 @@ namespace VernyomasNaplo
             }
 
             // Oszlopok szélességének meghatározása
+            int nameWidth = "Felhasználó".Length;
             int dateWidth = "Dátum".Length;
-            int bpWidth = "Vérnyomás".Length;
-            int rateWidth = "Értékelés".Length;
+            int bpWidth = "Mérés".Length;
 
             foreach (string record in records)
             {
                 string[] parts = record.Split(';');
                 if (parts.Length < 3) continue;
 
+                nameWidth = Math.Max(nameWidth, parts[0].Length);
                 dateWidth = Math.Max(dateWidth, parts[1].Length);
-                bpWidth = Math.Max(bpWidth, parts[2].Length);
 
                 string rating = RateBloodPressure(parts[2]);
-                rateWidth = Math.Max(rateWidth, StripAnsi(rating).Length);
+                bpWidth = Math.Max(bpWidth, StripAnsi(rating).Length);
             }
 
             // A táblázat kereteinek kialakítása
-            string top = $"┌{new string('─', dateWidth + 2)}┬{new string('─', bpWidth + 2)}┬{new string('─', rateWidth + 2)}┐";
-            string separator = $"├{new string('─', dateWidth + 2)}┼{new string('─', bpWidth + 2)}┼{new string('─', rateWidth + 2)}┤";
-            string bottom = $"└{new string('─', dateWidth + 2)}┴{new string('─', bpWidth + 2)}┴{new string('─', rateWidth + 2)}┘";
+            string top = $"┌{new string('─', nameWidth + 2)}┬{new string('─', dateWidth + 2)}┬{new string('─', bpWidth + 2)}┐";
+            string separator = $"├{new string('─', nameWidth + 2)}┼{new string('─', dateWidth + 2)}┼{new string('─', bpWidth + 2)}┤";
+            string bottom = $"└{new string('─', nameWidth + 2)}┴{new string('─', dateWidth + 2)}┴{new string('─', bpWidth + 2)}┘";
 
             // Fejléc
-            string header = $"│ {CenterText("Dátum", dateWidth)} │ {CenterText("Vérnyomás", bpWidth)} │ {CenterText("Értékelés", rateWidth)} │";
+            string header = $"│ {CenterText("Dátum", nameWidth)} │ {CenterText("Vérnyomás", dateWidth)} │ {CenterText("Értékelés", bpWidth)} │";
 
             Console.WriteLine(top);
             Console.WriteLine(header);
@@ -663,11 +663,11 @@ namespace VernyomasNaplo
                     continue; 
                 }
 
+                string name = CenterText(parts[0], nameWidth);
                 string date = CenterText(parts[1], dateWidth);
-                string bp = CenterText(parts[2], bpWidth);
-                string rate = CenterText(RateBloodPressure(parts[2]), rateWidth);
+                string bp = CenterText(RateBloodPressure(parts[2]), bpWidth);
 
-                Console.WriteLine($"│ {date} │ {bp} │ {rate} │");
+                Console.WriteLine($"│ {name} │ {date} │ {bp} │");
             }
 
             // Lábléc
@@ -705,18 +705,18 @@ namespace VernyomasNaplo
             }
 
             // Oszlopok szélességének meghatározása
-            int dateWidth = "Dátum".Length;
-            int bpWidth = "Vérnyomás".Length;
-            int rateWidth = "Értékelés".Length;
+            int nameWidth = "Dátum".Length;
+            int dateWidth = "Vérnyomás".Length;
+            int bpWidth = "Értékelés".Length;
 
             foreach (string record in records)
             {
                 string[] parts = record.Split(';');
                 if (parts.Length < 3) continue;
 
+                nameWidth = Math.Max(nameWidth, parts[0].Length);
                 dateWidth = Math.Max(dateWidth, parts[1].Length);
-                bpWidth = Math.Max(bpWidth, parts[2].Length);
-                rateWidth = Math.Max(rateWidth, StripAnsi(RateBloodPressure(parts[2])).Length);
+                bpWidth = Math.Max(bpWidth, StripAnsi(RateBloodPressure(parts[2])).Length);
             }
 
             int menuPoint = 0;
@@ -729,12 +729,12 @@ namespace VernyomasNaplo
                 Console.Clear();
 
                 // A táblázat kereteinek kialakítása
-                string top = $"┌{new string('─', dateWidth + 2)}┬{new string('─', bpWidth + 2)}┬{new string('─', rateWidth + 2)}┐";
-                string separator = $"├{new string('─', dateWidth + 2)}┼{new string('─', bpWidth + 2)}┼{new string('─', rateWidth + 2)}┤";
-                string bottom = $"└{new string('─', dateWidth + 2)}┴{new string('─', bpWidth + 2)}┴{new string('─', rateWidth + 2)}┘";
+                string top = $"┌{new string('─', nameWidth + 2)}┬{new string('─', dateWidth + 2)}┬{new string('─', bpWidth + 2)}┐";
+                string separator = $"├{new string('─', nameWidth + 2)}┼{new string('─', dateWidth + 2)}┼{new string('─', bpWidth + 2)}┤";
+                string bottom = $"└{new string('─', nameWidth + 2)}┴{new string('─', dateWidth + 2)}┴{new string('─', bpWidth + 2)}┘";
 
                 // Fejléc
-                string header = $"│ {CenterText("Dátum", dateWidth)} │ {CenterText("Vérnyomás", bpWidth)} │ {CenterText("Értékelés", rateWidth)} │";
+                string header = $"│ {CenterText("Dátum", nameWidth)} │ {CenterText("Vérnyomás", dateWidth)} │ {CenterText("Értékelés", bpWidth)} │";
 
                 Console.WriteLine(top);
                 Console.WriteLine(header);
@@ -744,9 +744,9 @@ namespace VernyomasNaplo
                 for (int i = 0; i < records.Count; i++)
                 {
                     string[] parts = records[i].Split(';');
+                    string name = CenterText(parts[0], nameWidth);
                     string date = CenterText(parts[1], dateWidth);
-                    string bp = CenterText(parts[2], bpWidth);
-                    string rate = CenterText(RateBloodPressure(parts[2]), rateWidth);
+                    string bp = CenterText(RateBloodPressure(parts[2]), bpWidth);
 
                     if (i == highlightIndex)
                     {
@@ -754,14 +754,14 @@ namespace VernyomasNaplo
                         Console.ForegroundColor = ConsoleColor.Black;
                     }
 
-                    Console.WriteLine($"│ {date} │ {bp} │ {rate} │");
+                    Console.WriteLine($"│ {name} │ {date} │ {bp} │");
                     Console.ResetColor();
                 }
 
                 Console.WriteLine(bottom);
 
                 // Extra sor a kilépéshez
-                string exitText = CenterText("Vissza a főmenübe", dateWidth + bpWidth + rateWidth + 6);
+                string exitText = CenterText("Vissza a főmenübe", nameWidth + dateWidth + bpWidth + 6);
                 if (highlightIndex == records.Count)
                 {
                     Console.BackgroundColor = ConsoleColor.DarkGray;
@@ -822,39 +822,75 @@ namespace VernyomasNaplo
         /// </summary>
         static void DisplayUsersMenu()
         {
-            int userAmount;
-            void ShowMenu4(int cPoint)
+            List<string> users = File.ReadAllLines("users.csv").ToList();
+
+            if (users.Count == 0)
             {
-                string[] users = File.ReadAllLines("users.csv");
-                userAmount = users.Length;
+                Console.WriteLine("Nincsenek felhasználók!");
+                Console.ReadLine();
+                return;
+            }
+
+            int menuPoint = 0;
+
+            // Cellákban lévő szöveg középre igazítása
+            string CenterText(string text, int width)
+            {
+                int leftPadding = (width - text.Length) / 2;
+                int rightPadding = width - text.Length - leftPadding;
+                if (leftPadding < 0) leftPadding = 0;
+                if (rightPadding < 0) rightPadding = 0;
+                return new string(' ', leftPadding) + text + new string(' ', rightPadding);
+            }
+
+            // Oszlopok szélességének meghatározása
+            int nameWidth = "Felhasználó".Length;
+            foreach (var user in users)
+            {
+                string username = user.Split(';')[0];
+                if (username.Length > nameWidth) nameWidth = username.Length;
+            }
+            string exitText = "Vissza a főmenübe";
+            if (exitText.Length > nameWidth) nameWidth = exitText.Length;
+
+            void ShowTable(int highlightIndex)
+            {
                 Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("*** VÉRNYOMÁSNAPLÓ ***");
-                Console.ForegroundColor = ConsoleColor.White;
 
-                for (int i = 0; i < userAmount; i++)
+                string top = $"┌{new string('─', nameWidth + 2)}┐";
+                string bottom = $"└{new string('─', nameWidth + 2)}┘";
+                string separator = $"├{new string('─', nameWidth + 2)}┤";
+                string header = $"│ {CenterText("Felhasználó", nameWidth)} │";
+
+                Console.WriteLine(top);
+                Console.WriteLine(header);
+                Console.WriteLine(separator);
+
+                for (int i = 0; i < users.Count; i++)
                 {
-                    if (i == cPoint)
+                    string username = users[i].Split(';')[0];
+                    string row = $"│ {CenterText(username, nameWidth)} │";
+
+                    if (i == highlightIndex)
                     {
-                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.BackgroundColor = ConsoleColor.DarkGray;
+                        Console.ForegroundColor = ConsoleColor.Black;
                     }
-                    else
-                    {
-                        Console.ForegroundColor = ConsoleColor.White;
-                    }
-                    Console.WriteLine(users[i].Split(';')[0]);
+
+                    Console.WriteLine(row);
+                    Console.ResetColor();
                 }
 
-                if (cPoint == userAmount)
+                exitText = CenterText("Vissza a főmenübe", nameWidth);
+                if (highlightIndex == users.Count)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.BackgroundColor = ConsoleColor.DarkGray;
+                    Console.ForegroundColor = ConsoleColor.Black;
                 }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                Console.WriteLine("Vissza a főmenübe");
-                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine($"│ {exitText} │");
+                Console.ResetColor();
+
+                Console.WriteLine(bottom);
             }
 
             do
@@ -862,53 +898,42 @@ namespace VernyomasNaplo
                 bool selected = false;
                 do
                 {
-                    ShowMenu4(cPoint);
-                    switch (Console.ReadKey().Key)
+                    ShowTable(menuPoint);
+
+                    switch (Console.ReadKey(true).Key)
                     {
-                        case ConsoleKey.Enter:
-                            selected = true;
-                            break;
                         case ConsoleKey.UpArrow:
-                            if (cPoint > 0)
-                            {
-                                cPoint -= 1;
-                            }
+                            if (menuPoint > 0) menuPoint--;
                             break;
                         case ConsoleKey.DownArrow:
-                            if (cPoint < userAmount)
-                            {
-                                cPoint += 1;
-                            }
+                            if (menuPoint < users.Count) menuPoint++;
+                            break;
+                        case ConsoleKey.Enter:
+                            selected = true;
                             break;
                     }
                 } while (!selected);
 
-                if (cPoint == userAmount)
+                if (menuPoint == users.Count)
                 {
                     break;
                 }
 
-                List<string> users;
-                users = File.ReadAllLines($"users.csv").ToList();
+                // A kiválasztott felhasználó törlése
+                string targetUser = users[menuPoint].Split(';')[0];
 
-                targetUser = users[cPoint].Split(';')[0];
-                Console.WriteLine(targetUser);
-
-                for (int i = 0; i < users.Count; i++)
+                Console.Clear();
+                Console.WriteLine($"Biztosan törli a felhasználót: {targetUser}? (i/n): ");
+                if (Console.ReadKey(true).Key == ConsoleKey.I)
                 {
-                    if (users[i].Split(';')[0] == targetUser)
-                    {
-                        Console.WriteLine(targetUser);
-                        users.RemoveAt(i);
-                        File.WriteAllLines("users.csv", users, Encoding.UTF8);
-                        File.Delete($"Users/{targetUser}.csv");
-                        Console.WriteLine($"A felhasználó sikeresen törölve. Enterre tovább...");
-                        Console.ReadLine();
-                        break;
-                    }
-                }
+                    users.RemoveAt(menuPoint);
+                    File.WriteAllLines("users.csv", users, Encoding.UTF8);
+                    File.Delete($"Users/{targetUser}.csv");
 
-            } while (cPoint != userAmount);
+                    Console.WriteLine($"\nA felhasználó {targetUser} sikeresen törölve. Enterre tovább...");
+                    Console.ReadLine();
+                }
+            } while (true);
         }
 
         /// <summary>
