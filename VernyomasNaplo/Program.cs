@@ -479,6 +479,13 @@ namespace VernyomasNaplo
                         allowed = false;
                         break;
                     }
+                    else if (username.ToLower() == "admin")
+                    {
+                        Console.Clear();
+                        WriteCentered("Az 'admin' felhasználónév fenntartott!");
+                        allowed = false;
+                        break;
+                    }
                 }
             } while (!allowed);
 
