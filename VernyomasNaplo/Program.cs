@@ -170,7 +170,7 @@ namespace VernyomasNaplo
                             }
                             break;
                         case ConsoleKey.DownArrow:
-                            if (cPoint < 4)
+                            if (cPoint < 5)
                             {
                                 cPoint += 1;
                             }
@@ -244,18 +244,29 @@ namespace VernyomasNaplo
 
                         break;
 
-                    case 3: // Felhasználó módosítása/törlése
+                    case 3: // Felhasználó törlése
 
                         Console.Clear();
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        WriteCentered("*** FELHASZNÁLÓ MÓDOSÍTÁSA/TÖRLÉSE ***");
+                        WriteCentered("*** FELHASZNÁLÓ TÖRLÉSE ***");
                         Console.ForegroundColor = ConsoleColor.White;
 
                         DisplayUsersMenu();
 
                         break;
 
-                    case 4: // Kilépés
+                    case 4: // Felhasználó jelszavának módosítása
+
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        WriteCentered("*** JELSZÓ ÁTÍRÁS ***");
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        ResetUserPassword();
+
+                        break;
+
+                    case 5: // Kilépés
                         Console.Clear();
                         Console.Beep();
                         WriteCentered("Biztosan kilép? (i/n): ");
@@ -266,7 +277,7 @@ namespace VernyomasNaplo
                         break;
                 }
 
-            } while (cPoint != 4);
+            } while (cPoint != 5);
             void ShowMenu1(int cPoint)
             {
                 Console.Clear();
@@ -309,8 +320,17 @@ namespace VernyomasNaplo
                 {
                     Console.ForegroundColor = ConsoleColor.White;
                 }
-                WriteCentered("Felhasználó módosítása/törlése (ADMIN)");
+                WriteCentered("Felhasználó törlése (ADMIN)");
                 if (cPoint == 4)
+                {
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                WriteCentered("Felhasználó jelszavának módosítása (ADMIN)");
+                if (cPoint == 5)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                 }
@@ -1107,6 +1127,50 @@ namespace VernyomasNaplo
                 byte[] bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(password));
                 return BitConverter.ToString(bytes).Replace("-", "").ToLower();
             }
+        }
+
+        /// <summary>
+        /// Engedi az adminnak, hogy visszaállítsa egy felhasználó jelszavát.
+        /// </summary>
+        static void ResetUserPassword()
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            WriteCentered("*** JELSZÓ VISSZAÁLLÍTÁSA (ADMIN) ***");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            // Felhasználó kiválasztása
+            string targetUser = DisplayUserSelectMenu();
+            if (targetUser == null) return;
+
+            WriteCentered($"Új jelszó megadása a következő felhasználónak: {targetUser}");
+            string newPassword = ReadCentered("Új jelszó: ");
+
+            string hashed = HashPassword(newPassword);
+
+            // Összes felhasználó beolvasása
+            List<string> entries = File.ReadAllLines("users.csv").ToList();
+
+            // Jelszócsere
+            for (int i = 0; i < entries.Count; i++)
+            {
+                string[] parts = entries[i].Split(';');
+
+                if (parts[0] == targetUser)
+                {
+                    parts[1] = hashed;  // Új hash
+                    entries[i] = string.Join(";", parts);
+                    break;
+                }
+            }
+
+            // Mentés
+            File.WriteAllLines("users.csv", entries);
+
+            Console.Clear();
+            WriteCentered($"A(z) {targetUser} jelszava sikeresen visszaállítva!");
+            WriteCentered("Enter a folytatáshoz...");
+            Console.ReadLine();
         }
     }
 }
