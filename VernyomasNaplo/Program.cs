@@ -11,7 +11,6 @@ namespace VernyomasNaplo
     {
         static int cPoint = 0;
         static string user;
-        static string targetUser;
         static List<string> records;
 
         static void Main(string[] _)
@@ -223,13 +222,25 @@ namespace VernyomasNaplo
 
                         Console.Clear();
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        WriteCentered("*** MÉRÉSI ADAT MÓDOSÍTÁSA ***");
+                        WriteCentered("*** FELHASZNÁLÓ KIVÁLASZTÁSA ***");
                         Console.ForegroundColor = ConsoleColor.White;
 
-                        targetUser = ReadCentered("Adja meg a módosítandó felhasználó nevét: ");
+                        string targetUser = DisplayUserSelectMenu();
 
-                        ReadCSVFile(targetUser);
-                        DisplayRecordsMenu(targetUser);
+                        if (targetUser != null)
+                        {
+                            ReadCSVFile(targetUser);
+                            DisplayRecordsMenu(targetUser);
+                        }
+                        else
+                        {
+                            break;
+                        }
+
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        WriteCentered("*** MÉRÉSI ADAT MÓDOSÍTÁSA ***");
+                        Console.ForegroundColor = ConsoleColor.White;
 
                         break;
 
@@ -598,22 +609,6 @@ namespace VernyomasNaplo
                 return;
             }
 
-            // Az ANSI kódok eltávolítása a hosszúság számításához, mert valamiért beleszámít.
-            string StripAnsi(string text)
-            {
-                return System.Text.RegularExpressions.Regex.Replace(text, @"\u001b\[[0-9;]*m", "");
-            }
-
-            // Cellákban lévő szöveg középre igazítása
-            string CenterText(string text, int width)
-            {
-                string stripped = StripAnsi(text);
-                int padding = width - stripped.Length;
-                int padLeft = padding / 2;
-                int padRight = padding - padLeft;
-                return new string(' ', padLeft) + text + new string(' ', padRight);
-            }
-
             // Oszlopok szélességének meghatározása
             int nameWidth = "Felhasználó".Length;
             int dateWidth = "Dátum".Length;
@@ -675,22 +670,6 @@ namespace VernyomasNaplo
             {
                 WriteCentered($"{user} felhasználónak nincsenek mérései.");
                 return;
-            }
-
-            // Az ANSI kódok eltávolítása a hosszúság számításához, mert valamiért beleszámít.
-            string StripAnsi(string text)
-            {
-                return System.Text.RegularExpressions.Regex.Replace(text, @"\u001b\[[0-9;]*m", "");
-            }
-
-            // Cellákban lévő szöveg középre igazítása
-            string CenterText(string text, int width)
-            {
-                int visibleLength = StripAnsi(text).Length;
-                if (visibleLength >= width) return text;
-                int leftPadding = (width - visibleLength) / 2;
-                int rightPadding = width - visibleLength - leftPadding;
-                return new string(' ', leftPadding) + text + new string(' ', rightPadding);
             }
 
             // Oszlopok szélességének meghatározása
@@ -789,8 +768,7 @@ namespace VernyomasNaplo
                 // A kiválasztott mérés módosítása
                 Console.Clear();
                 WriteCentered($"Kiválasztott rekord: {records[menuPoint]}");
-                WriteCentered("Adja meg az új vérnyomás értéket: ");
-                string newRecord = Console.ReadLine();
+                string newRecord = ReadCentered("Adja meg az új vérnyomás értéket: ");
 
                 string[] recordParts = records[menuPoint].Split(';');
                 recordParts[2] = newRecord; // Vérnyomás érték frissítése
@@ -922,6 +900,88 @@ namespace VernyomasNaplo
         }
 
         /// <summary>
+        /// Itt az admin kiválasztja melyik felahsználó mérési adatait szeretné módosítani.
+        /// </summary>
+        /// <returns>A kiválasztott felhasználót.</returns>
+        static string DisplayUserSelectMenu()
+        {
+            List<string> users = File.ReadAllLines("users.csv").ToList();
+
+            int menuPoint = 0;
+
+            // Determine column width
+            int nameWidth = "Felhasználó".Length;
+            foreach (var u in users)
+            {
+                string username = u.Split(';')[0];
+                nameWidth = Math.Max(nameWidth, StripAnsi(username).Length);
+            }
+
+            void ShowTable(int highlight)
+            {
+                Console.Clear();
+
+                string top = $"┌{new string('─', nameWidth + 2)}┐";
+                string header = $"│ {CenterText("Felhasználó", nameWidth)} │";
+                string sep = $"├{new string('─', nameWidth + 2)}┤";
+                string bottom = $"└{new string('─', nameWidth + 2)}┘";
+
+                WriteCentered(top);
+                WriteCentered(header);
+                WriteCentered(sep);
+
+                for (int i = 0; i < users.Count; i++)
+                {
+                    string username = users[i].Split(';')[0];
+                    string row = $"│ {CenterText(username, nameWidth)} │";
+
+                    if (i == highlight)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+
+                    WriteCentered(row);
+                }
+
+                Console.ForegroundColor = ConsoleColor.White;
+                WriteCentered(bottom);
+            }
+
+            while (true)
+            {
+                bool selected = false;
+
+                do
+                {
+                    ShowTable(menuPoint);
+
+                    switch (Console.ReadKey(true).Key)
+                    {
+                        case ConsoleKey.UpArrow:
+                            if (menuPoint > 0) menuPoint--;
+                            break;
+
+                        case ConsoleKey.DownArrow:
+                            if (menuPoint < users.Count - 1) menuPoint++;
+                            break;
+
+                        case ConsoleKey.Enter:
+                            selected = true;
+                            break;
+                    }
+
+                } while (!selected);
+
+                string chosenUser = users[menuPoint].Split(';')[0];
+                return chosenUser;
+            }
+        }
+
+        /// <summary>
         /// A felhasználó új mérését rögzíti a naplójába.
         /// </summary>
         /// <param name="record">A mérés, ezt a felhasználó adja meg.</param>
@@ -1008,6 +1068,31 @@ namespace VernyomasNaplo
 
             // Kurzor pozíciójának beállítása.
             return Console.ReadLine();
+        }
+
+        /// <summary>
+        /// Az ANSI színkódok eltávolítása a margók számításához.
+        /// </summary>
+        /// <param name="text">A szöveg amivel számolni akarunk</param>
+        /// <returns></returns>
+        static string StripAnsi(string text)
+        {
+            return System.Text.RegularExpressions.Regex.Replace(text, @"\u001b\[[0-9;]*m", "");
+        }
+
+        /// <summary>
+        /// Cellákban lévő szöveg középre igazítása
+        /// </summary>
+        /// <param name="text">A szöveg amit középre kell igazítani</param>
+        /// <param name="width">A cella szélessége (Automatikus kiszámolva a szöveghossz alapján)</param>
+        /// <returns></returns>
+        static string CenterText(string text, int width)
+        {
+            int visibleLength = StripAnsi(text).Length;
+            if (visibleLength >= width) return text;
+            int leftPadding = (width - visibleLength) / 2;
+            int rightPadding = width - visibleLength - leftPadding;
+            return new string(' ', leftPadding) + text + new string(' ', rightPadding);
         }
 
         /// <summary>
