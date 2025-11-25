@@ -599,7 +599,26 @@ namespace VernyomasNaplo
             string hashedPassword = HashPassword(password);
 
             // Születési dátum bekérése, ezt majd DateTime-mal kéne megoldani.
-            string birthDate = ReadCentered("Születési dátum (ÉÉÉÉ-HH-NN): ");
+            DateTime birthDate;
+
+            while (true)
+            {
+                WriteCentered("Születési dátum (YYYY-MM-DD): ");
+                string input = ReadCentered("");
+
+                if (DateTime.TryParseExact(input, "yyyy-MM-dd",
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.None,
+                    out birthDate))
+                {
+                    // Valid date
+                    break;
+                }
+                else
+                {
+                    WriteCentered("Hibás dátumformátum! Példa: 2001-05-23");
+                }
+            }
 
             // Nem bekérése, csak Férfi vagy Nő lehet
             string gender;
