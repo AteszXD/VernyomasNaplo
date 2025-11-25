@@ -628,7 +628,7 @@ namespace VernyomasNaplo
             } while (gender != "férfi" && gender != "nő");
 
             // Felhasználó létrehozása és mentése a users.csv fájlba
-            File.AppendAllText("users.csv", $"{username};{hashedPassword};{gender};{birthDate}\n", Encoding.UTF8);
+            File.AppendAllText("users.csv", $"{username};{hashedPassword};{gender};{birthDate:yyyy-MM-dd}\n", Encoding.UTF8);
             File.Create($"{username}.csv").Close();
             File.Move($"{username}.csv", $"Users/{username}.csv");
             user = username;
