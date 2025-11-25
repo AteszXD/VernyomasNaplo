@@ -1017,13 +1017,16 @@ namespace VernyomasNaplo
         /// <param name="record">A mérés.</param>
         static string RateBloodPressure(string record)
         {
-            double ratio = double.Parse(record.Split('/')[0]) / double.Parse(record.Split('/')[1]);
+            int systole = int.Parse(record.Split('/')[0]);
+            int diastole = int.Parse(record.Split('/')[1]);
 
-            if (ratio > 1.6)
-            { 
+            if (systole > 135 || diastole > 85)
+            // Magasnak mondjuk a vérnyomást, ha a szisztolés érték nagyobb mint 135, a diasztolés érték pedig nagyobb mint 85.
+            {
                 return $"\u001b[31m{record} (Magas)\u001b[0m"; 
             }
-            else if (ratio < 1.4) 
+            else if (systole < 100 || diastole < 60)
+            // Alacsonynak mondjuk a vérnyomást, ha a szisztolés érték kisebb mint 100, a diasztolés érték pedig kisebb mint 60.
             {
                 return $"\u001b[94m{record} (Alacsony)\u001b[0m";
             }
@@ -1041,11 +1044,25 @@ namespace VernyomasNaplo
 
             foreach (string record in records)
             {
-                double ratio = double.Parse(record.Split(';')[2].Split('/')[0]) / double.Parse(record.Split(';')[2].Split('/')[1]);
+                string tension = record.Split(';')[2];
 
-                if (ratio > 1.6) high++;
-                else if (ratio < 1.4) low++;
-                else normal++;
+                int systole = int.Parse(tension.Split('/')[0]);
+                int diastole = int.Parse(tension.Split('/')[1]);
+
+                if (systole > 135 || diastole > 85)
+                // Magasnak mondjuk a vérnyomást, ha a szisztolés érték nagyobb mint 135, a diasztolés érték pedig nagyobb mint 85.
+                {
+                    high++;
+                }
+                else if (systole < 100 || diastole < 60)
+                // Alacsonynak mondjuk a vérnyomást, ha a szisztolés érték kisebb mint 100, a diasztolés érték pedig kisebb mint 60.
+                {
+                    low++;
+                }
+                else
+                {
+                    normal++;
+                }
             }
 
             double sum = normal + high + low;
