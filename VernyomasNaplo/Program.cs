@@ -224,8 +224,45 @@ namespace VernyomasNaplo
                         WriteCentered("*** ÚJ MÉRÉS RÖGZÍTÉSE ***");
                         Console.ForegroundColor = ConsoleColor.White;
 
-                        WriteCentered("Adja meg a vérnyomás értékét: ");
-                        string record = ReadCentered("");
+                        WriteCentered("Adja meg a vérnyomás értékét (például 120/80): ");
+
+                        string record;
+                        int systole;
+                        int diastole;
+
+                        while (true)
+                        {
+                            record = ReadCentered("");
+
+                            // Hány '/' van az inputban
+                            string[] parts = record.Split('/');
+                            if (parts.Length != 2)
+                            {
+                                WriteCentered("Hibás formátum! Példa: 120/80");
+                                continue;
+                            }
+
+                            // Ellenőrizzük, hogy tényleg számok-e
+                            bool ok1 = int.TryParse(parts[0], out systole);
+                            bool ok2 = int.TryParse(parts[1], out diastole);
+
+                            if (!ok1 || !ok2)
+                            {
+                                WriteCentered("Mindkét értéknek számnak kell lennie!");
+                                continue;
+                            }
+
+                            // Ellenőrizzük, hogy érvényes értékek-e
+                            if (systole <= 0 || diastole <= 0)
+                            {
+                                WriteCentered("Mindkét értéknek 0 felett kell lennie!");
+                                continue;
+                            }
+
+                            // Ha minden jó, mehetünk tovább
+                            break;
+                        }
+
                         WriteCSVFile(record, user);
 
                         WriteCentered("Az adatokat sikeresen rögzítettük. Enterre tovább...");
