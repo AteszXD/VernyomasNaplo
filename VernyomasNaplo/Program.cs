@@ -208,7 +208,7 @@ namespace VernyomasNaplo
                             }
                             break;
                         case ConsoleKey.DownArrow:
-                            if (cPoint < 5)
+                            if (cPoint < 6)
                             {
                                 cPoint += 1;
                             }
@@ -341,7 +341,16 @@ namespace VernyomasNaplo
 
                         break;
 
-                    case 5: // Kilépés
+                    case 5: // Admin áttekintés
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        WriteCentered("*** ADMIN ÁTTEKINTŐ ***");
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        AdminOverview();
+                        break;
+
+                    case 6: // Kilépés
                         Console.Clear();
                         Console.Beep();
                         WriteCentered("Biztosan kilép? (i/n): ");
@@ -406,6 +415,15 @@ namespace VernyomasNaplo
                 }
                 WriteCentered("Felhasználó jelszavának módosítása (ADMIN)");
                 if (cPoint == 5)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                WriteCentered("Általános áttekintés (ADMIN)");
+                if (cPoint == 6)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                 }
@@ -1227,6 +1245,137 @@ namespace VernyomasNaplo
                 WriteCentered($"A felhasználó {targetUser} sikeresen törölve. Enterre tovább...");
                 Console.ReadLine();
             }
+        }
+
+        /// <summary>
+        /// Áttekinti az összes felhasználó mérési statisztikáit, és kiemeli azokat akiknél a magas vagy alacsony mérések aránya meghalad egy küszöbértéket.
+        /// </summary>
+        static void AdminOverview()
+        {
+            double abnormalThreshold = double.Parse(ReadCentered("Kérem adja meg ami ahány % felett szűrni szeretne: ")); // % Ami feletti arány esetén figyelmeztetünk
+
+            // Összes felhasználó beolvasása
+            List<string> users = File.ReadAllLines("users.csv").Select(l => l.Split(';')[0]).ToList();
+
+            // Összesített statisztika
+            int totalGood = 0;
+            int totalHigh = 0;
+            int totalLow = 0;
+
+            (string user, string date, string bp, int sys, int dia)? highest = null;
+            (string user, string date, string bp, int sys, int dia)? lowest = null;
+
+            // Felhasználónkénti statisztikák
+            List<(string User, int Count, double Good, double High, double Low, bool Abnormal)> userStats = new List<(string User, int Count, double Good, double High, double Low, bool Abnormal)>();
+
+            foreach (string u in users)
+            {
+                string path = $"Users/{u}.csv";
+                if (!File.Exists(path)) continue;
+
+                string[] lines = File.ReadAllLines(path);
+                if (lines.Length == 0)
+                {
+                    userStats.Add((u, 0, 0, 0, 0, false));
+                    continue;
+                }
+
+                int good = 0, high = 0, low = 0;
+
+                foreach (string line in lines)
+                {
+                    string[] parts = line.Split(';');
+                    if (parts.Length < 3) continue;
+
+                    string date = parts[1];
+                    string bp = parts[2];
+
+                    string[] nums = bp.Split('/');
+                    int sys = int.Parse(nums[0]);
+                    int dia = int.Parse(nums[1]);
+
+                    // Kategorizálás
+                    if (sys > 135 || dia > 85)
+                    {
+                        high++;
+                    }
+                    else if (sys < 100 || dia < 60) 
+                    { 
+                        low++; 
+                    }
+                    else
+                    {
+                        good++;
+                    }
+
+                    // Összesített szélső értékek
+                    if (highest == null || sys > highest.Value.sys)
+                    {
+                        highest = (u, date, bp, sys, dia);
+                    }
+
+                    if (lowest == null || sys < lowest.Value.sys)
+                    {
+                        lowest = (u, date, bp, sys, dia);
+                    }
+                }
+
+                int count = good + high + low;
+                totalGood += good;
+                totalHigh += high;
+                totalLow += low;
+
+                double percentHigh = count > 0 ? (high / (double)count) * 100 : 0;
+                double percentLow = count > 0 ? (low / (double)count) * 100 : 0;
+
+                bool abnormal = percentHigh > abnormalThreshold || percentLow > abnormalThreshold;
+
+                userStats.Add((u, count, good / (double)count * 100, percentHigh, percentLow, abnormal));
+            }
+
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            WriteCentered("=== ADMIN ÁTTEKINTÉS ===");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            WriteCentered("--- Felhasználói összesítés ---\n");
+
+            foreach ((string User, int Count, double Good, double High, double Low, bool Abnormal) s in userStats)
+            {
+                if (s.Count == 0)
+                {
+                    WriteCentered($"{s.User}: nincs mérés");
+                    continue;
+                }
+
+                string alert = s.Abnormal ? " \u001b[31m(!)\u001b[0m" : "";
+
+                WriteCentered($"{s.User}: {s.Count} mérés | " +
+                              $"\u001b[32m{Math.Round(s.Good, 2)}% jó\u001b[0m, " +
+                              $"\u001b[31m{Math.Round(s.High, 2)}% magas\u001b[0m, " +
+                              $"\u001b[94m{Math.Round(s.Low, 2)}% alacsony\u001b[0m" +
+                              alert);
+            }
+
+            WriteCentered("--- Összesített statisztika ---\n");
+            int sum = totalGood + totalHigh + totalLow;
+            if (sum > 0)
+            {
+                WriteCentered($"\u001b[32mJó: {totalGood} ({Math.Round(totalGood / (double)sum * 100, 2)}%)\u001b[0m");
+                WriteCentered($"\u001b[31mMagas: {totalHigh} ({Math.Round(totalHigh / (double)sum * 100, 2)}%)\u001b[0m");
+                WriteCentered($"\u001b[94mAlacsony: {totalLow} ({Math.Round(totalLow / (double)sum * 100, 2)}%)\u001b[0m");
+            }
+
+            WriteCentered("--- Szélső értékek ---\n");
+
+            if (highest != null)
+                WriteCentered($"\u001b[31mLegmagasabb: {highest.Value.bp} ({highest.Value.user}, {highest.Value.date})\u001b[0m");
+
+            if (lowest != null)
+                WriteCentered($"\u001b[94mLegalacsonyabb: {lowest.Value.bp} ({lowest.Value.user}, {lowest.Value.date})\u001b[0m");
+
+            WriteCentered("Enter a visszalépéshez...");
+            Console.ReadLine();
         }
     }
 }
