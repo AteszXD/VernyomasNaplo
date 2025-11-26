@@ -15,6 +15,7 @@ namespace VernyomasNaplo
 
         static void Main(string[] _)
         {
+            Console.Title = "Vérnyomásnapló";
             CheckUsersFile();
         }
 
