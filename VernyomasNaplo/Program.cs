@@ -625,6 +625,10 @@ namespace VernyomasNaplo
             do
             {
                 gender = ReadCentered("Neme (Férfi/Nő): ").ToLower();
+                if (gender != "férfi" && gender != "nő")
+                    { 
+                        WriteCentered("A nem csak 'Férfi' vagy 'Nő' lehet!");
+                    }
             } while (gender != "férfi" && gender != "nő");
 
             // Felhasználó létrehozása és mentése a users.csv fájlba
@@ -872,7 +876,45 @@ namespace VernyomasNaplo
                 // A kiválasztott mérés módosítása
                 Console.Clear();
                 WriteCentered($"Kiválasztott rekord: {records[menuPoint]}");
-                string newRecord = ReadCentered("Adja meg az új vérnyomás értéket: ");
+
+                WriteCentered("Adja meg a vérnyomás értékét (például 120/80): ");
+
+                string newRecord;
+                int systole;
+                int diastole;
+
+                while (true)
+                {
+                    newRecord = ReadCentered("Adja meg az új vérnyomás értéket: ");
+
+                    // Hány '/' van az inputban
+                    string[] parts = newRecord.Split('/');
+                    if (parts.Length != 2)
+                    {
+                        WriteCentered("Hibás formátum! Példa: 120/80");
+                        continue;
+                    }
+
+                    // Ellenőrizzük, hogy tényleg számok-e
+                    bool ok1 = int.TryParse(parts[0], out systole);
+                    bool ok2 = int.TryParse(parts[1], out diastole);
+
+                    if (!ok1 || !ok2)
+                    {
+                        WriteCentered("Mindkét értéknek számnak kell lennie!");
+                        continue;
+                    }
+
+                    // Ellenőrizzük, hogy érvényes értékek-e
+                    if (systole <= 0 || diastole <= 0)
+                    {
+                        WriteCentered("Mindkét értéknek 0 felett kell lennie!");
+                        continue;
+                    }
+
+                    // Ha minden jó, mehetünk tovább
+                    break;
+                }
 
                 string[] recordParts = records[menuPoint].Split(';');
                 recordParts[2] = newRecord; // Vérnyomás érték frissítése
