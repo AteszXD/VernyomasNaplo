@@ -325,7 +325,7 @@ namespace VernyomasNaplo
                         WriteCentered("*** FELHASZNÁLÓ TÖRLÉSE ***");
                         Console.ForegroundColor = ConsoleColor.White;
 
-                        DisplayUsersMenu();
+                        DeleteUser();
 
                         break;
 
@@ -886,124 +886,7 @@ namespace VernyomasNaplo
         }
 
         /// <summary>
-        /// Ebben a menüben lehet az adminisztrátornak felhasználókat törölni.
-        /// </summary>
-        static void DisplayUsersMenu()
-        {
-            List<string> users = File.ReadAllLines("users.csv").ToList();
-
-            if (users.Count == 0)
-            {
-                WriteCentered("Nincsenek felhasználók!");
-                Console.ReadLine();
-                return;
-            }
-
-            int menuPoint = 0;
-
-            // Cellákban lévő szöveg középre igazítása
-            string CenterText(string text, int width)
-            {
-                int leftPadding = (width - text.Length) / 2;
-                int rightPadding = width - text.Length - leftPadding;
-                if (leftPadding < 0) leftPadding = 0;
-                if (rightPadding < 0) rightPadding = 0;
-                return new string(' ', leftPadding) + text + new string(' ', rightPadding);
-            }
-
-            // Oszlopok szélességének meghatározása
-            int nameWidth = "Felhasználó".Length;
-            foreach (var user in users)
-            {
-                string username = user.Split(';')[0];
-                if (username.Length > nameWidth) nameWidth = username.Length;
-            }
-            string exitText = "Vissza a főmenübe";
-            if (exitText.Length > nameWidth) nameWidth = exitText.Length;
-
-            void ShowTable(int highlightIndex)
-            {
-                Console.Clear();
-
-                string top = $"┌{new string('─', nameWidth + 2)}┐";
-                string bottom = $"└{new string('─', nameWidth + 2)}┘";
-                string separator = $"├{new string('─', nameWidth + 2)}┤";
-                string header = $"│ {CenterText("Felhasználó", nameWidth)} │";
-
-                WriteCentered(top);
-                WriteCentered(header);
-                WriteCentered(separator);
-
-                for (int i = 0; i < users.Count; i++)
-                {
-                    string username = users[i].Split(';')[0];
-                    string row = $"│ {CenterText(username, nameWidth)} │";
-
-                    if (i == highlightIndex)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                    }
-
-                    WriteCentered(row);
-                    Console.ResetColor();
-                }
-
-                exitText = CenterText("Vissza a főmenübe", nameWidth);
-                if (highlightIndex == users.Count)
-                {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                }
-                WriteCentered($"│ {exitText} │");
-                Console.ResetColor();
-
-                WriteCentered(bottom);
-            }
-
-            do
-            {
-                bool selected = false;
-                do
-                {
-                    ShowTable(menuPoint);
-
-                    switch (Console.ReadKey(true).Key)
-                    {
-                        case ConsoleKey.UpArrow:
-                            if (menuPoint > 0) menuPoint--;
-                            break;
-                        case ConsoleKey.DownArrow:
-                            if (menuPoint < users.Count) menuPoint++;
-                            break;
-                        case ConsoleKey.Enter:
-                            selected = true;
-                            break;
-                    }
-                } while (!selected);
-
-                if (menuPoint == users.Count)
-                {
-                    break;
-                }
-
-                // A kiválasztott felhasználó törlése
-                string targetUser = users[menuPoint].Split(';')[0];
-
-                Console.Clear();
-                WriteCentered($"Biztosan törli a felhasználót: {targetUser}? (i/n): ");
-                if (Console.ReadKey(true).Key == ConsoleKey.I)
-                {
-                    users.RemoveAt(menuPoint);
-                    File.WriteAllLines("users.csv", users, Encoding.UTF8);
-                    File.Delete($"Users/{targetUser}.csv");
-
-                    WriteCentered($"\nA felhasználó {targetUser} sikeresen törölve. Enterre tovább...");
-                    Console.ReadLine();
-                }
-            } while (true);
-        }
-
-        /// <summary>
-        /// Itt az admin kiválasztja melyik felahsználó mérési adatait szeretné módosítani.
+        /// Itt az admin kiválasztja melyik felahsználó mérési adatait szeretné módosítani, vagy törölni.
         /// </summary>
         /// <returns>A kiválasztott felhasználót.</returns>
         static string DisplayUserSelectMenu()
@@ -1012,7 +895,7 @@ namespace VernyomasNaplo
 
             int menuPoint = 0;
 
-            // Determine column width
+            // Oszlopok szélességének meghatározása
             int nameWidth = "Felhasználó".Length;
             foreach (var u in users)
             {
@@ -1271,6 +1154,34 @@ namespace VernyomasNaplo
             WriteCentered($"A(z) {targetUser} jelszava sikeresen visszaállítva!");
             WriteCentered("Enter a folytatáshoz...");
             Console.ReadLine();
+        }
+
+        /// <summary>
+        /// A felhasználó törlését elvégző függvény.
+        /// </summary>
+        static void DeleteUser()
+        {
+            string targetUser = DisplayUserSelectMenu();
+            while (targetUser == "admin")
+            {
+                Console.Clear();
+                WriteCentered("Az admin nem törölheti magát! Enterre tovább...");
+                Console.ReadLine();
+                targetUser = DisplayUserSelectMenu();
+            }
+
+            Console.Clear();
+            WriteCentered($"Biztosan törli a felhasználót: {targetUser}? (i/n): ");
+            if (Console.ReadKey(true).Key == ConsoleKey.I)
+            {
+                List<string> users = File.ReadAllLines("users.csv").ToList();
+                users.RemoveAll(u => u.Split(';')[0] == targetUser);
+                File.WriteAllLines("users.csv", users, Encoding.UTF8);
+                File.Delete($"Users/{targetUser}.csv");
+
+                WriteCentered($"\nA felhasználó {targetUser} sikeresen törölve. Enterre tovább...");
+                Console.ReadLine();
+            }
         }
     }
 }
