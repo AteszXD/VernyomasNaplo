@@ -459,7 +459,7 @@ namespace VernyomasNaplo
 
                         Register();
 
-                        break;//
+                        break;
 
                     case 1: // Bejelentkezés
 
@@ -611,7 +611,7 @@ namespace VernyomasNaplo
                     System.Globalization.DateTimeStyles.None,
                     out birthDate))
                 {
-                    // Valid date
+                    // Érvényes dátum esetén
                     break;
                 }
                 else
@@ -1188,7 +1188,8 @@ namespace VernyomasNaplo
                 File.WriteAllLines("users.csv", users, Encoding.UTF8);
                 File.Delete($"Users/{targetUser}.csv");
 
-                WriteCentered($"\nA felhasználó {targetUser} sikeresen törölve. Enterre tovább...");
+                WriteCentered("\n");
+                WriteCentered($"A felhasználó {targetUser} sikeresen törölve. Enterre tovább...");
                 Console.ReadLine();
             }
         }
