@@ -735,7 +735,7 @@ namespace VernyomasNaplo
             string bottom = $"└{new string('─', nameWidth + 2)}┴{new string('─', dateWidth + 2)}┴{new string('─', bpWidth + 2)}┘";
 
             // Fejléc
-            string header = $"│ {CenterText("Dátum", nameWidth)} │ {CenterText("Vérnyomás", dateWidth)} │ {CenterText("Értékelés", bpWidth)} │";
+            string header = $"│ {CenterText("Felhasználó", nameWidth)} │ {CenterText("Dátum", dateWidth)} │ {CenterText("Vérnyomás", bpWidth)} │";
 
             WriteCentered(top);
             WriteCentered(header);
