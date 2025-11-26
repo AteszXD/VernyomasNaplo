@@ -632,15 +632,7 @@ namespace VernyomasNaplo
             File.Create($"{username}.csv").Close();
             File.Move($"{username}.csv", $"Users/{username}.csv");
             user = username;
-            if (user == "admin")
-            {
-                LoggedinAdminMenu();
-
-            }
-            else
-            {
-                LoggedinMenu();
-            }
+            LoggedinMenu();
         }
 
         /// <summary>
