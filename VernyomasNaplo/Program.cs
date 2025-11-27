@@ -628,11 +628,20 @@ namespace VernyomasNaplo
                 if (DateTime.TryParseExact(input, "yyyy-MM-dd",
                     System.Globalization.CultureInfo.InvariantCulture,
                     System.Globalization.DateTimeStyles.None,
+                    out birthDate) && birthDate > DateTime.Now)
+                {
+                    WriteCentered("Hibás dátumformátum! Példa: 2001-05-23");
+                }
+
+                else if (DateTime.TryParseExact(input, "yyyy-MM-dd",
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.None,
                     out birthDate))
                 {
                     // Érvényes dátum esetén
                     break;
                 }
+
                 else
                 {
                     WriteCentered("Hibás dátumformátum! Példa: 2001-05-23");
