@@ -416,7 +416,7 @@ namespace VernyomasNaplo
                 WriteCentered("Felhasználó jelszavának módosítása (ADMIN)");
                 if (cPoint == 5)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.Blue;
                 }
                 else
                 {
