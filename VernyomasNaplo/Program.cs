@@ -361,7 +361,7 @@ namespace VernyomasNaplo
                         break;
                 }
 
-            } while (cPoint != 5);
+            } while (cPoint != 6);
             void ShowMenu1(int cPoint)
             {
                 Console.Clear();
