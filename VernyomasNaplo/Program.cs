@@ -1248,11 +1248,35 @@ namespace VernyomasNaplo
         }
 
         /// <summary>
-        /// Áttekinti az összes felhasználó mérési statisztikáit, és kiemeli azokat akiknél a magas vagy alacsony mérések aránya meghalad egy küszöbértéket.
+        /// Áttekinti az összes felhasználó mérési statisztikáit, és kiemeli azokat akiknél a magas vagy alacsony mérések aránya meghalad egy határértéket.
         /// </summary>
         static void AdminOverview()
         {
-            double abnormalThreshold = double.Parse(ReadCentered("Kérem adja meg ami ahány % felett szűrni szeretne: ")); // % Ami feletti arány esetén figyelmeztetünk
+            double abnormalThreshold;
+            do
+            {
+                string input = ReadCentered("Kérem adja meg ami ahány % felett szűrni szeretne: ");
+                if (double.TryParse(input, out abnormalThreshold))
+                {
+                    if (abnormalThreshold < 0)
+                    {
+                        WriteCentered("A százalék nem lehet negatív");
+                    }
+                    else if (abnormalThreshold > 100)
+                    {
+                        WriteCentered("A százalék nem lehet több mint 100");
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    WriteCentered("Hibás számformátum! Kérem adjon meg egy számot (pl. 30 vagy 30,5).");
+                }
+            } while (true);
+
 
             // Összes felhasználó beolvasása
             List<string> users = File.ReadAllLines("users.csv").Select(l => l.Split(';')[0]).ToList();
@@ -1299,9 +1323,9 @@ namespace VernyomasNaplo
                     {
                         high++;
                     }
-                    else if (sys < 100 || dia < 60) 
-                    { 
-                        low++; 
+                    else if (sys < 100 || dia < 60)
+                    {
+                        low++;
                     }
                     else
                     {
@@ -1355,6 +1379,24 @@ namespace VernyomasNaplo
                               $"\u001b[31m{Math.Round(s.High, 2)}% magas\u001b[0m, " +
                               $"\u001b[94m{Math.Round(s.Low, 2)}% alacsony\u001b[0m" +
                               alert);
+            }
+
+            // Túl magas arány lista
+            WriteCentered($"--- Felhasználók, akiknél a magas mérések aránya meghaladja a {abnormalThreshold}%-ot ---\n");
+            bool foundAbnormal = false;
+            foreach (var s in userStats)
+            {
+                if (s.Abnormal && s.Count > 0)
+                {
+                    foundAbnormal = true;
+                    WriteCentered($"{s.User}: " +
+                        $"\u001b[31m{Math.Round(s.High, 2)}% magas\u001b[0m, " +
+                        $"\u001b[94m{Math.Round(s.Low, 2)}% alacsony\u001b[0m");
+                }
+            }
+            if (!foundAbnormal)
+            {
+                WriteCentered("Nincs olyan felhasználó, akinél a magas vagy alacsony mérések aránya meghaladja a küszöböt.");
             }
 
             WriteCentered("--- Összesített statisztika ---\n");
